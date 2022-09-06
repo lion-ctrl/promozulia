@@ -460,14 +460,18 @@ export default css.global`
     display: flex;
     font-size: 1rem;
     font-weight: bold;
+    height: 3.75rem;
     justify-content: center;
+    position: relative;
     text-align: center;
     text-decoration: none;
+    width: 9.375rem;
   }
 
   @media (min-width: ${breakPoints.md}) {
     .logo {
       font-size: 2rem;
+      height: 4.375rem;
     }
   }
 `;

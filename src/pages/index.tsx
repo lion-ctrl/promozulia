@@ -15,7 +15,7 @@ export default function Home() {
       <AutoCarousel
         backgroundImages={autoCarouselData.backgroundImages}
         content={autoCarouselData.content}
-        height='calc(100vh - 3.5rem)'
+        height='calc(100vh - 4.5rem)'
         width='100vw'
       />
       <section id='title' className='container'>
