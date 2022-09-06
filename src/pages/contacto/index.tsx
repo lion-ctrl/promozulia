@@ -259,7 +259,7 @@ export default function Contact() {
           <div className='col-12'>
             <ReCAPTCHA
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_KEY!}
-              size='normal'
+              size='compact'
               ref={captchaRef}
             />
           </div>
