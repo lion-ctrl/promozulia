@@ -218,7 +218,7 @@ export default function AutoCarousel({
           margin: 0;
           padding: 0;
           position: relative;
-          width: 200vw;
+          width: 150vw;
         }
 
         article {
