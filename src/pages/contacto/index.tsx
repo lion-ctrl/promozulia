@@ -257,13 +257,11 @@ export default function Contact() {
           </div>
           <div className='col-12 row'></div>
           <div className='col-12'>
-            <div className='recaptcha-container'>
-              <ReCAPTCHA
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_KEY!}
-                size='compact'
-                ref={captchaRef}
-              />
-            </div>
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_KEY!}
+              size='normal'
+              ref={captchaRef}
+            />
           </div>
           <div className='col-12 row'>
             <button type='submit' className='button col-6'>
