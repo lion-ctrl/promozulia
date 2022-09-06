@@ -121,7 +121,6 @@ export default function AutoCarousel({
                   src={bg}
                   alt={`image-${i}`}
                   layout='fill'
-                  objectFit='cover'
                   placeholder='blur'
                   blurDataURL={`data:image/svg+xml;base64,${toBase64(
                     shimmer('100%', '100%')
@@ -219,6 +218,7 @@ export default function AutoCarousel({
           margin: 0;
           padding: 0;
           position: relative;
+          width: 200vw;
         }
 
         article {
@@ -284,6 +284,12 @@ export default function AutoCarousel({
         @media (min-width: ${breakPoints.sm}) {
           aside {
             width: 80%;
+          }
+        }
+
+        @media (min-width: ${breakPoints.md}) {
+          figure {
+            width: 100vw;
           }
         }
       `}</style>
