@@ -12,7 +12,9 @@ import { breakPoints, colors } from 'styles/variables';
 interface Props {
   backgroundImages: string[];
   content: {
-    text: string;
+    title: string;
+    text?: string;
+    type: string;
   }[];
   height: string;
   width: string;
@@ -132,16 +134,23 @@ export default function AutoCarousel({
         </div>
 
         <article>
-          <aside className='container'>
-            <h4
+          <aside className={`container`}>
+            <div
               className={
                 state.isAnimateContent ? 'fade-in-down' : 'fade-out-down'
               }
             >
-              {content.map(({ text }, i) => {
-                return state.activeContent === i && text;
+              {content.map(({ title, text, type }, i) => {
+                return (
+                  state.activeContent === i && (
+                    <React.Fragment key={title}>
+                      <h4 className={`${type}-font-size`}>{title}</h4>
+                      {text && <p>{text}</p>}
+                    </React.Fragment>
+                  )
+                );
               })}
-            </h4>
+            </div>
           </aside>
         </article>
 
@@ -233,12 +242,27 @@ export default function AutoCarousel({
         aside {
           align-items: center;
           display: flex;
+          flex-direction: column;
           height: 100%;
           justify-content: center;
           width: 60%;
         }
 
         h4 {
+          color: ${colors.white};
+          line-height: 1.5;
+          text-align: center;
+        }
+
+        h4.h1-font-size {
+          font-size: clamp(1.5rem, calc(1.16rem + 1.96vw), 2.63rem);
+        }
+
+        h4.h3-font-size {
+          font-size: clamp(1.25rem, calc(0.91rem + 1.96vw), 2.38rem);
+        }
+
+        p {
           color: ${colors.white};
           line-height: 1.5;
           text-align: center;
