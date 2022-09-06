@@ -24,21 +24,26 @@ export const autoCarouselData = {
     "/assets/img/electric-pole.jpg",
   ],
   content: [
-    { text: `PROMOZULIA` },
+    { title: `PROMOZULIA`, type: "h1" },
     {
-      text: `Apoyamos el impulso al sector petrolero, promoviendo iniciativas desde el
-            sector educación. Promovemos la generación de nuevas y renovadas
+      type: "h3",
+      title: `Apoyamos el impulso al sector petrolero, promoviendo iniciativas desde el
+            sector educación.`,
+      text: `Promovemos la generación de nuevas y renovadas
             oportunidades de estudio medio y avanzado, con el fin de aumentar la oferta
             de mano de obra calificada, necesaria para el crecimiento del sector.`,
     },
     {
-      text: `Impulsamos el uso de tecnologías emergentes de primer orden, con el fin de
-            dar a conocer las oportunidades de uso en el sector agroindustrial. Drones, IoT,
+      type: "h3",
+      title: `Impulsamos el uso de tecnologías emergentes de primer orden.`,
+      text: `Con el fin de dar a conocer las oportunidades de uso en el sector agroindustrial. Drones, IoT,
             Big Data, son solo algunas de estas tecnologías que al corto plazo serán
             necesarias en el sector agroindustrial.`,
     },
     {
-      text: `Ante la crisis energética, impulsamos proyectos relacionados con energías
+      type: "h3",
+      title: `Ante la crisis energética.`,
+      text: `Impulsamos proyectos relacionados con energías
             alternativas, con las cuales aportamos soluciones viables para el sector
             eléctrico, a su vez que generamos conciencia en el uso de la energía.`,
     },
@@ -48,15 +53,15 @@ export const autoCarouselData = {
 export const cardInfo = [
   {
     Icon: MagnifyingGlass,
-    content: "Exploración del destino",
+    content: "Análisis",
   },
   {
     Icon: MagnifyingGlassWithTwoArrows,
-    content: "Toma de desición",
+    content: "Determinación",
   },
   {
     Icon: Hierarchy,
-    content: "Instalación",
+    content: "Construción",
   },
   {
     Icon: Handshake,
