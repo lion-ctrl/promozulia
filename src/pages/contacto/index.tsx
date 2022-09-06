@@ -8,7 +8,7 @@ import Layout from 'components/Layout';
 // hooks
 import useForm from 'hooks/useForm';
 // styles
-import { breakPoints, colors } from 'styles/variables';
+import { colors } from 'styles/variables';
 
 export default function Contact() {
   const captchaRef = useRef(null);
@@ -279,36 +279,6 @@ export default function Contact() {
 
         form {
           margin-bottom: 2rem;
-        }
-
-        .recaptcha-container {
-          margin-left: auto;
-          margin-right: auto;
-          width: 60%;
-        }
-
-        @media (min-width: ${breakPoints.sm}) {
-          .recaptcha-container {
-            width: 30%;
-          }
-        }
-
-        @media (min-width: ${breakPoints.md}) {
-          .recaptcha-container {
-            width: 25%;
-          }
-        }
-
-        @media (min-width: ${breakPoints.lg}) {
-          .recaptcha-container {
-            width: 20%;
-          }
-        }
-
-        @media (min-width: ${breakPoints.xl}) {
-          .recaptcha-container {
-            width: 15%;
-          }
         }
       `}</style>
     </Layout>
