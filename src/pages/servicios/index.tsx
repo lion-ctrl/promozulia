@@ -63,6 +63,7 @@ export default function Services() {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
             url(/assets/img/banner4.jpg);
+          background-position: 100% 20%;
           height: 500px;
           padding: 2rem 1rem;
         }
