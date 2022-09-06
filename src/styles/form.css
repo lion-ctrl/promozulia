@@ -1,0 +1,177 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap");
+
+/* ********** Custom Properties ********** */
+:root {
+  --color-bg-high-contrast: #ffffff;
+  --color-bg-low-contrast: #eff1f2;
+  --color-danger: #b50706;
+  --color-success: #28a745;
+  --color-ink-high-contrast: #121212;
+  --color-interaction: #004182;
+  --interaction-minus-two: rgba(73, 133, 224, 0.12);
+  --low-contrast: rgba(60, 60, 67, 0.3);
+  --medium-contrast: rgba(19, 19, 21, 0.6);
+}
+
+/* ********** Reset ********** */
+html {
+  box-sizing: border-box;
+  font-family: "Raleway", sans-serif;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+/* ****** input-group ****** */
+div.input-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* ****** input ****** */
+.input-underlined > input,
+.input-underlined > textarea {
+  background-color: var(--color-bg-high-contrast);
+}
+.input-filled > input,
+.input-filled > textarea {
+  background-color: var(--color-bg-low-contrast);
+}
+
+.input-underlined > input,
+.input-underlined > textarea,
+.input-filled > input,
+.input-filled > textarea {
+  border: none;
+  border-bottom: thin solid var(--medium-contrast);
+  display: block;
+  font-family: "Raleway", sans-serif;
+  font-size: clamp(1rem, calc(0.92rem + 0.43vw), 1.25rem);
+  line-height: 1.2;
+  outline: none;
+  padding: 0.8rem 0 0 0.8rem;
+  width: 100%;
+}
+
+.input-underlined > input::placeholder,
+.input-underlined > textarea::placeholder,
+.input-filled > input::placeholder,
+.input-filled > textarea::placeholder {
+  font-family: "Raleway", sans-serif;
+}
+
+.input-underlined > input,
+.input-filled > input {
+  height: 3rem;
+  padding-right: 2rem;
+}
+
+.input-underlined > textarea,
+.input-filled > textarea {
+  height: 10rem;
+  padding-right: 0.8rem;
+  resize: none;
+}
+
+.input-underlined > .input-label,
+.input-filled > .input-label {
+  color: var(--medium-contrast);
+  left: 0.8rem;
+  line-height: 1.2;
+  position: absolute;
+  top: 0.8rem;
+  transition: all 0.2s linear;
+}
+
+.input-underlined > .input-helper,
+.input-filled > .input-helper {
+  color: var(--color-ink-high-contrast);
+  display: block;
+  font-size: clamp(0.69rem, calc(0.59rem + 0.54vw), 1rem);
+  margin-top: 0.5rem;
+}
+
+.input-underlined > svg,
+.input-filled > svg {
+  opacity: 1;
+  position: absolute;
+  right: 0.5rem;
+  top: 0.8rem;
+}
+
+.input-underlined > input:hover,
+.input-underlined > textarea:hover,
+.input-filled > textarea:hover,
+.input-filled > input:hover {
+  background-color: var(--interaction-minus-two);
+  border-color: var(--color-ink-high-contrast);
+}
+
+.input-underlined:not(.input-danger) > input:focus,
+.input-underlined:not(.input-danger) > textarea:focus,
+.input-filled:not(.input-danger) > input:focus,
+.input-filled:not(.input-danger) > textarea:focus {
+  border-color: var(--color-interaction);
+}
+
+.input-underlined:not(.input-danger) > input:focus ~ svg,
+.input-filled:not(.input-danger) > input:focus ~ svg {
+  opacity: 1;
+}
+
+.input-underlined > input:focus + .input-label,
+.input-underlined > input:valid + .input-label,
+.input-filled > input:focus + .input-label,
+.input-filled > input:valid + .input-label {
+  font-size: 0.8rem;
+  top: 0;
+}
+
+.input-underlined:not(.input-danger) > input:focus + .input-label,
+.input-filled:not(.input-danger) > input:focus + .input-label {
+  color: var(--color-interaction);
+}
+
+/* ****** disabled ****** */
+.input-underlined > input:disabled,
+.input-filled > input:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-bg-low-contrast);
+}
+
+.input-underlined > input:disabled + .input-label,
+.input-underlined > input:disabled ~ .input-helper,
+.input-filled > input:disabled + .input-label,
+.input-filled > input:disabled ~ .input-helper {
+  color: var(--low-contrast);
+  pointer-events: none;
+}
+
+/* ****** success ****** */
+.input-underlined.input-success > .input-label,
+.input-underlined.input-success > .input-helper,
+.input-filled.input-success > .input-label,
+.input-filled.input-success > .input-helper {
+  color: var(--color-success);
+}
+
+.input-success > input,
+.input-success > textarea {
+  border-color: var(--color-success);
+}
+
+/* ****** danger ****** */
+.input-underlined.input-danger > .input-label,
+.input-underlined.input-danger > .input-helper,
+.input-filled.input-danger > .input-label,
+.input-filled.input-danger > .input-helper {
+  color: var(--color-danger);
+}
+
+.input-danger > input,
+.input-danger > textarea {
+  border-color: var(--color-danger);
+}
