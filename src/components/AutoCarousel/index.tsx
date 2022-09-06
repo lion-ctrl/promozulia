@@ -4,7 +4,7 @@ import Image from 'next/image';
 // components
 import ProgressBar from './ProgressBar';
 // helpers
-import { debounce } from 'helpers';
+import { debounce, shimmer, toBase64 } from 'helpers';
 // styles
 import { addOpacity } from 'styles/utils';
 import { breakPoints, colors } from 'styles/variables';
@@ -122,6 +122,10 @@ export default function AutoCarousel({
                   alt={`image-${i}`}
                   layout='fill'
                   objectFit='cover'
+                  placeholder='blur'
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                    shimmer('100%', '100%')
+                  )}`}
                 />
               </figure>
             </div>
