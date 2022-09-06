@@ -61,7 +61,7 @@ export const cardInfo = [
   },
   {
     Icon: Hierarchy,
-    content: "Construción",
+    content: "Construcción",
   },
   {
     Icon: Handshake,

@@ -1,8 +1,11 @@
 // react
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 // components
 import ActiveLink from 'components/ActiveLink';
+// helpers
+import { shimmer, toBase64 } from 'helpers';
 // styles
 import { breakPoints, colors } from 'styles/variables';
 
@@ -33,7 +36,17 @@ export default function Header() {
       <header>
         <section className='container'>
           <Link href='/'>
-            <a className='logo'>PROMOZULIA</a>
+            <a className='logo'>
+              <Image
+                src='/assets/img/logo.jpeg'
+                alt='logo'
+                layout='fill'
+                placeholder='blur'
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                  shimmer('100%', '100%')
+                )}`}
+              />
+            </a>
           </Link>
           <button
             className={`header-btn ${isMenuOpen ? 'is-active' : ''}`}
@@ -66,7 +79,7 @@ export default function Header() {
       <style jsx>{`
         header {
           background-color: ${colors.color4};
-          height: 4rem;
+          height: 5rem;
           padding: 10px 0;
           position: sticky;
           top: 0;
@@ -143,7 +156,7 @@ export default function Header() {
           padding: 1rem 0;
           pointer-events: none;
           position: fixed;
-          top: 3.8rem;
+          top: 4.8rem;
           transition: opacity 0.5s ease-in-out;
           width: 100%;
         }
@@ -205,6 +218,12 @@ export default function Header() {
 
           nav a.is-active::after {
             transform: translateX(0%);
+          }
+        }
+
+        @media (min-width: ${breakPoints.md}) {
+          header {
+            height: 6rem;
           }
         }
 

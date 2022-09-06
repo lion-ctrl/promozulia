@@ -1,5 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+// helpers
+import { shimmer, toBase64 } from 'helpers';
+// styles
 import { colors } from 'styles/variables';
 
 export default function Footer() {
@@ -10,7 +14,17 @@ export default function Footer() {
       <footer>
         <nav className='container row'>
           <Link href='/'>
-            <a className='logo col-12 col-md-4'>PROMOZULIA</a>
+            <a className='logo col-12 col-md-4'>
+              <Image
+                src='/assets/img/logo.jpeg'
+                alt='logo'
+                layout='fill'
+                placeholder='blur'
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                  shimmer('100%', '100%')
+                )}`}
+              />
+            </a>
           </Link>
           <article className='col-12 col-md-4'>
             <h4>Vísitanos</h4>
