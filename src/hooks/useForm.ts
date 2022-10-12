@@ -8,8 +8,8 @@ const validation = {
 const useForm = (initialState = {}) => {
   const [state, setState] = useState<any>(initialState);
 
-  const reset = (newFormState = initialState) => {
-    setState(newFormState);
+  const reset = () => {
+    setState(initialState);
   };
 
   const handleChange = ({
@@ -33,32 +33,15 @@ const useForm = (initialState = {}) => {
       const regex = validation[valid];
       if (regex === undefined) return;
 
-      const newState = {
+      setState({
         ...state,
-        [name]: { value },
-      };
-
-      if (regex.test(value)) {
-        newState[name].valid = true;
-      } else {
-        newState[name].valid = false;
-      }
-      setState(newState);
+        [name]: { value, valid: regex.test(value) },
+      });
       return;
     }
 
     if (required) {
-      const newState = {
-        ...state,
-        [name]: { value },
-      };
-
-      if (value.length) {
-        newState[name].valid = true;
-      } else {
-        newState[name].valid = false;
-      }
-      setState(newState);
+      setState({ ...state, [name]: { value, valid: !!value.length } });
       return;
     }
 

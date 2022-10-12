@@ -122,6 +122,7 @@ export default css.global`
   }
 
   /* ! ****** components ****** */
+  /* --- banner --- */
   .banner {
     background-position: center;
     background-repeat: no-repeat;
@@ -137,6 +138,7 @@ export default css.global`
     justify-content: center;
   }
 
+  /* --- button --- */
   .button {
     background-color: ${colors.color1};
     border: none;
@@ -155,268 +157,13 @@ export default css.global`
     opacity: 1;
   }
 
+  /* --- card --- */
   .card {
     border-radius: 5px;
     border: thin solid ${colors.gray};
     padding: 2rem;
     position: relative;
     text-align: center;
-  }
-
-  /* ****** Grid ****** */
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-evenly;
-  }
-
-  .col-1 {
-    width: 8.333333333333333%;
-  }
-
-  .col-2 {
-    width: 16.66666666666667%;
-  }
-
-  .col-3 {
-    width: 23%;
-  }
-
-  .col-4 {
-    width: 31%;
-  }
-
-  .col-5 {
-    width: 41.66666666666667%;
-  }
-
-  .col-6 {
-    width: 48%;
-  }
-
-  .col-7 {
-    width: 58.33333333333333%;
-  }
-
-  .col-8 {
-    width: 66.66666666666667%;
-  }
-
-  .col-9 {
-    width: 75%;
-  }
-
-  .col-10 {
-    width: 83.33333333333333%;
-  }
-
-  .col-11 {
-    width: 91.66666666666667%;
-  }
-
-  .col-12 {
-    width: 100%;
-  }
-
-  @media screen and (min-width: ${breakPoints.sm}) {
-    .col-sm-1 {
-      width: 8.333333333333333%;
-    }
-
-    .col-sm-2 {
-      width: 16.66666666666667%;
-    }
-
-    .col-sm-3 {
-      width: 23%;
-    }
-
-    .col-sm-4 {
-      width: 31%;
-    }
-
-    .col-sm-5 {
-      width: 41.66666666666667%;
-    }
-
-    .col-sm-6 {
-      width: 48%;
-    }
-
-    .col-sm-7 {
-      width: 58.33333333333333%;
-    }
-
-    .col-sm-8 {
-      width: 66.66666666666667%;
-    }
-
-    .col-sm-9 {
-      width: 75%;
-    }
-
-    .col-sm-10 {
-      width: 83.33333333333333%;
-    }
-
-    .col-sm-11 {
-      width: 91.66666666666667%;
-    }
-
-    .col-sm-12 {
-      width: 100%;
-    }
-  }
-
-  @media screen and (min-width: ${breakPoints.md}) {
-    .col-md-1 {
-      width: 8.333333333333333%;
-    }
-
-    .col-md-2 {
-      width: 16.66666666666667%;
-    }
-
-    .col-md-3 {
-      width: 23%;
-    }
-
-    .col-md-4 {
-      width: 31%;
-    }
-
-    .col-md-5 {
-      width: 41.66666666666667%;
-    }
-
-    .col-md-6 {
-      width: 48%;
-    }
-
-    .col-md-7 {
-      width: 58.33333333333333%;
-    }
-
-    .col-md-8 {
-      width: 66.66666666666667%;
-    }
-
-    .col-md-9 {
-      width: 75%;
-    }
-
-    .col-md-10 {
-      width: 83.33333333333333%;
-    }
-
-    .col-md-11 {
-      width: 91.66666666666667%;
-    }
-
-    .col-md-12 {
-      width: 100%;
-    }
-  }
-
-  @media screen and (min-width: ${breakPoints.lg}) {
-    .col-lg-1 {
-      width: 8.333333333333333%;
-    }
-
-    .col-lg-2 {
-      width: 16.66666666666667%;
-    }
-
-    .col-lg-3 {
-      width: 23%;
-    }
-
-    .col-lg-4 {
-      width: 31%;
-    }
-
-    .col-lg-5 {
-      width: 41.66666666666667%;
-    }
-
-    .col-lg-6 {
-      width: 48%;
-    }
-
-    .col-lg-7 {
-      width: 58.33333333333333%;
-    }
-
-    .col-lg-8 {
-      width: 66.66666666666667%;
-    }
-
-    .col-lg-9 {
-      width: 75%;
-    }
-
-    .col-lg-10 {
-      width: 83.33333333333333%;
-    }
-
-    .col-lg-11 {
-      width: 91.66666666666667%;
-    }
-
-    .col-lg-12 {
-      width: 100%;
-    }
-  }
-
-  @media screen and (min-width: ${breakPoints.xl}) {
-    .col-xl-1 {
-      width: 8.333333333333333%;
-    }
-
-    .col-xl-2 {
-      width: 16.66666666666667%;
-    }
-
-    .col-xl-3 {
-      width: 23%;
-    }
-
-    .col-xl-4 {
-      width: 31%;
-    }
-
-    .col-xl-5 {
-      width: 41.66666666666667%;
-    }
-
-    .col-xl-6 {
-      width: 48%;
-    }
-
-    .col-xl-7 {
-      width: 58.33333333333333%;
-    }
-
-    .col-xl-8 {
-      width: 66.66666666666667%;
-    }
-
-    .col-xl-9 {
-      width: 75%;
-    }
-
-    .col-xl-10 {
-      width: 83.33333333333333%;
-    }
-
-    .col-xl-11 {
-      width: 91.66666666666667%;
-    }
-
-    .col-xl-12 {
-      width: 100%;
-    }
   }
 
   /* ****** Utilities ****** */

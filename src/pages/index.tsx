@@ -1,54 +1,121 @@
 import Link from 'next/link';
+import Image from 'next/image';
 // components
 import AutoCarousel from 'components/AutoCarousel';
 import Layout from 'components/Layout';
 import Sectors from 'components/Sectors';
-// data
-import { autoCarouselData, cardInfo } from 'data/homePageData';
 // styles
 import { colors } from 'styles/variables';
 import { addOpacity } from 'styles/utils';
+// http methods
+import { HOST } from 'api';
+import { getHomePageDataAPI } from 'api/pages';
 
-export default function Home() {
+interface HomeProps {
+  data: any;
+  carouselData: {
+    backgroundImages: string[];
+    content: { title: string; text?: string; fontSize: string }[];
+  };
+  cardsData: { id: number; title: string | null; src: string | null }[];
+  sectorsCarousel: { id: number; title: string | null; src: string | null }[];
+  error: boolean | undefined;
+}
+
+export const getServerSideProps = async () => {
+  try {
+    const {
+      data: { data },
+    } = await getHomePageDataAPI();
+
+    const carouselData: {
+      backgroundImages: string[];
+      content: { title: string; text?: string; fontSize: string }[];
+    } = {
+      backgroundImages: [],
+      content: [],
+    };
+
+    for (const { imagen_de_fondo: backgroundImage, titulo, texto } of data
+      .attributes.carusel_inicio) {
+      carouselData.backgroundImages.push(
+        `${HOST}${backgroundImage.data.attributes.url}`
+      );
+
+      carouselData.content.push({
+        title: titulo,
+        text: texto,
+        fontSize: texto ? 'small-size' : 'big-size',
+      });
+    }
+
+    const cardsData = [];
+    for (const { id, imagen, titulo } of data.attributes.tarjetas_inicio) {
+      cardsData.push({
+        id,
+        src: `${HOST}${imagen.data.attributes.url}`,
+        title: titulo,
+      });
+    }
+
+    const sectorsCarousel = [];
+    for (const { id, imagen, titulo } of data.attributes.carusel_sectores) {
+      sectorsCarousel.push({
+        id,
+        src: `${HOST}${imagen.data.attributes.url}`,
+        title: titulo,
+      });
+    }
+
+    return { props: { data, carouselData, cardsData, sectorsCarousel } };
+  } catch (error: any) {
+    return { props: { message: error.message, error: true } };
+  }
+};
+
+export default function Home({
+  data,
+  carouselData,
+  cardsData,
+  sectorsCarousel,
+  error,
+}: HomeProps) {
+  if (error) return 'No se puede cargar la página.';
+
   return (
     <Layout>
       <AutoCarousel
-        backgroundImages={autoCarouselData.backgroundImages}
-        content={autoCarouselData.content}
+        backgroundImages={carouselData.backgroundImages}
+        content={carouselData.content}
         height='calc(100vh - 4.5rem)'
         width='100vw'
       />
       <section id='title' className='container'>
-        <h1>
-          Impactamos en el territorio a través de la atracción de inversiones y
-          captación de grandes eventos.
-        </h1>
+        <h1>{data?.attributes?.titulo}</h1>
       </section>
       <section id='banner-1' className='banner'>
         <div className='container'>
-          <h2>
-            Brindamos acompañamiento a las empresas nacionales o extranjeras en
-            cada etapa de su proceso de inversión o reinversión.
-          </h2>
+          <h2>{data?.attributes?.sub_titulo}</h2>
         </div>
       </section>
       <section id='cards' className='container row'>
-        {cardInfo.map(({ Icon, content }) => (
+        {cardsData.map(({ id, src, title }) => (
           <article
-            key={content}
+            key={id}
             className='box-shadow card col-12 col-sm-6 col-lg-3'
+            style={{ padding: '1.5rem' }}
           >
-            <Icon height={47} width={47} style={{ fill: colors.color1 }} />
-            <p style={{ marginBottom: 0 }}>{content}</p>
+            {src && <Image src={src} alt='imagen' height={47} width={47} />}
+            <p style={{ fontSize: '16px', marginBottom: 0 }}>{title}</p>
           </article>
         ))}
       </section>
-      <Sectors />
+      <Sectors content={sectorsCarousel} />
       <section id='banner-2' className='banner'>
         <div className='container'>
-          <h3>Si deseas recibir nuestro apoyo no dudes en contactarnos.</h3>
+          <h3>{data?.attributes?.texto_banner_contacto}</h3>
           <Link href='/contacto'>
-            <a className='button'>Contáctanos</a>
+            <a className='button'>{data?.attributes?.texto_boton_contacto}</a>
           </Link>
         </div>
       </section>
@@ -69,7 +136,9 @@ export default function Home() {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(/assets/img/banner1.jpg);
+            url(${HOST}${
+        data?.attributes?.imagen_banner_sub_titulo?.data?.attributes?.url
+      });
           background-attachment: fixed;
           clip-path: ellipse(80% 100% at 50% 0%);
           height: 400px;
@@ -110,7 +179,9 @@ export default function Home() {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(/assets/img/banner2.jpg);
+            url(${HOST}${
+        data?.attributes?.imagen_banner_contacto?.data?.attributes?.url
+      });
           height: 300px;
           margin-top: 2rem;
           padding: 2rem 1rem;

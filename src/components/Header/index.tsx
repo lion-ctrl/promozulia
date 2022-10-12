@@ -1,7 +1,10 @@
-// react
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+// redux
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import { setAuthLogOutUser } from 'store/actions/auth';
 // components
 import ActiveLink from 'components/ActiveLink';
 // helpers
@@ -10,46 +13,37 @@ import { shimmer, toBase64 } from 'helpers';
 import { breakPoints, colors } from 'styles/variables';
 
 export default function Header() {
+  const { headerInfo } = useSelector((state: RootState) => state.app);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const menuData = [
-    {
-      href: '/',
-      text: 'Inicio',
-    },
-    {
-      href: '/nosotros',
-      text: 'Nosotros',
-    },
-    {
-      href: '/servicios',
-      text: 'Servicios',
-    },
-    {
-      href: '/contacto',
-      text: 'Contacto',
-    },
-  ];
 
   return (
     <>
       <header>
-        <section className='container'>
+        <nav className='container row'>
           <Link href='/'>
-            <a className='logo'>
-              <Image
-                src='/assets/img/logo.jpeg'
-                alt='logo'
-                layout='fill'
-                placeholder='blur'
-                blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                  shimmer('100%', '100%')
-                )}`}
-              />
+            <a className='col-8 col-sm-10 col-md-3 col-lg-2'>
+              {headerInfo.logoSrc === 'ZULIA' ? (
+                <h3 className='logo'>{headerInfo.logoSrc}</h3>
+              ) : (
+                <div className='logo'>
+                  <Image
+                    src={headerInfo.logoSrc}
+                    alt='logo'
+                    layout='fill'
+                    placeholder='blur'
+                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                      shimmer('100%', '100%')
+                    )}`}
+                  />
+                </div>
+              )}
             </a>
           </Link>
           <button
-            className={`header-btn ${isMenuOpen ? 'is-active' : ''}`}
+            className={`header-btn ${
+              isMenuOpen ? 'is-active' : ''
+            } col-4 col-sm-2`}
             type='button'
             title='menu-button'
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -60,25 +54,73 @@ export default function Header() {
               <span className='hamburger-line line3'></span>
             </div>
           </button>
-          <nav
-            className={isMenuOpen ? 'is-active' : ''}
+          <div
+            className={`links ${
+              isMenuOpen ? 'is-active' : ''
+            } col-md-9 col-lg-10 row`}
             onClick={() => setIsMenuOpen(false)}
           >
-            {menuData.map((data) => (
-              <ActiveLink
-                activeClassName='is-active'
-                href={data.href}
-                key={`${data.text}`}
-              >
-                <a>{data.text}</a>
-              </ActiveLink>
-            ))}
-          </nav>
-        </section>
+            <div className='internal-links col-12 col-md-7'>
+              {headerInfo.publicLinks.map(({ id, href, name }) => {
+                return (
+                  <ActiveLink key={id} href={href} activeClassName='is-active'>
+                    <a>{name}</a>
+                  </ActiveLink>
+                );
+              })}
+              {isAuthenticated &&
+                headerInfo.privateLinks.map(({ id, href, name }) => {
+                  return (
+                    <ActiveLink
+                      key={id}
+                      href={href}
+                      activeClassName='is-active'
+                    >
+                      <a>{name}</a>
+                    </ActiveLink>
+                  );
+                })}
+            </div>
+            <div className='session-links col-12 col-md-5'>
+              {!isAuthenticated &&
+                headerInfo.sessionLinks.map(({ id, href, name }) => {
+                  return (
+                    <ActiveLink
+                      key={id}
+                      href={href}
+                      activeClassName='is-active'
+                    >
+                      <a>{name}</a>
+                    </ActiveLink>
+                  );
+                })}
+              {isAuthenticated &&
+                headerInfo.sessionPrivateLinks.map(({ id, href, name }) =>
+                  href !== null ? (
+                    <ActiveLink
+                      key={id}
+                      href={href}
+                      activeClassName='is-active'
+                    >
+                      <a>{name}</a>
+                    </ActiveLink>
+                  ) : (
+                    <a
+                      key={id}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setAuthLogOutUser()}
+                    >
+                      {name}
+                    </a>
+                  )
+                )}
+            </div>
+          </div>
+        </nav>
       </header>
       <style jsx>{`
         header {
-          background-color: ${colors.color4};
+          background-color: ${colors.color1};
           height: 5rem;
           padding: 10px 0;
           position: sticky;
@@ -86,17 +128,13 @@ export default function Header() {
           z-index: 1000;
         }
 
-        section {
-          align-items: center;
-          display: flex;
-          justify-content: space-between;
-          position: relative;
-        }
-
         .header-btn {
-          background-color: ${colors.color4};
+          align-items: center;
+          background-color: ${colors.color1};
           border: none;
           cursor: pointer;
+          display: flex;
+          justify-content: center;
           outline: none;
           padding: 0.5rem;
         }
@@ -145,9 +183,8 @@ export default function Header() {
           transition: transform 0.4s ease-in-out;
         }
 
-        nav {
+        div.links {
           align-items: center;
-          background-color: ${colors.color1};
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -156,23 +193,24 @@ export default function Header() {
           padding: 1rem 0;
           pointer-events: none;
           position: fixed;
+          row-gap: 3rem;
           top: 4.8rem;
           transition: opacity 0.5s ease-in-out;
           width: 100%;
         }
 
-        nav.is-active {
+        div.links.is-active {
           opacity: 1;
           pointer-events: auto;
         }
 
-        nav a {
+        div.links a {
           align-items: center;
           color: ${colors.white};
           display: flex;
           font-size: 0.8rem;
           font-weight: bold;
-          justify-content: flex-start;
+          justify-content: center;
           padding: 0.8rem 0;
           position: relative;
           text-align: center;
@@ -180,31 +218,44 @@ export default function Header() {
         }
 
         @media (min-width: ${breakPoints.md}) {
+          header {
+            height: 6rem;
+          }
+
           button.header-btn {
             display: none;
           }
 
-          nav {
+          div.links {
             flex-direction: row;
             opacity: 1;
             padding: 0.5rem 0;
             pointer-events: auto;
             position: static;
-            width: auto;
+            width: 74%;
           }
 
-          nav a {
-            font-size: 1rem;
+          div.internal-links {
+            display: flex;
+            justify-content: center;
+          }
+
+          div.session-links {
+            display: flex;
+            justify-content: flex-end;
+          }
+
+          div.links a {
             overflow: hidden;
             padding: 0;
             margin-right: 0.7rem;
           }
 
-          nav a:last-of-type {
+          div.links a:last-of-type {
             margin-right: 0;
           }
 
-          nav a::after {
+          div.links a::after {
             background-color: ${colors.white};
             bottom: 0;
             content: '';
@@ -216,19 +267,13 @@ export default function Header() {
             width: 100%;
           }
 
-          nav a.is-active::after {
+          div.links a.is-active::after {
             transform: translateX(0%);
           }
         }
 
-        @media (min-width: ${breakPoints.md}) {
-          header {
-            height: 6rem;
-          }
-        }
-
         @media (min-width: ${breakPoints.lg}) {
-          nav a {
+          div.links a {
             margin-right: 1rem;
           }
         }

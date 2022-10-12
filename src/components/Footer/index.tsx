@@ -1,42 +1,60 @@
-import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+// redux
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 // helpers
 import { shimmer, toBase64 } from 'helpers';
 // styles
 import { colors } from 'styles/variables';
 
 export default function Footer() {
-  const year = new Date().getFullYear();
+  const { footerInfo } = useSelector((state: RootState) => state.app);
 
   return (
     <>
       <footer>
         <nav className='container row'>
           <Link href='/'>
-            <a className='logo col-12 col-md-4'>
-              <Image
-                src='/assets/img/logo.jpeg'
-                alt='logo'
-                layout='fill'
-                placeholder='blur'
-                blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                  shimmer('100%', '100%')
-                )}`}
-              />
+            <a className='col-12 col-md-4'>
+              {footerInfo.logoSrc === 'ZULIA' ? (
+                <h3 className='logo'>{footerInfo.logoSrc}</h3>
+              ) : (
+                <div
+                  style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div className='logo'>
+                    <Image
+                      src={footerInfo.logoSrc}
+                      alt='logo'
+                      layout='fill'
+                      placeholder='blur'
+                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                        shimmer('100%', '100%')
+                      )}`}
+                    />
+                  </div>
+                </div>
+              )}
             </a>
           </Link>
           <article className='col-12 col-md-4'>
-            <h4>Vísitanos</h4>
-            <p>Maracaibo, Zulia Venezuela</p>
+            <h4>{footerInfo.directionTitle}</h4>
+            <p>{footerInfo.direction}</p>
           </article>
           <article className='col-12 col-md-4'>
-            <h4>Llámanos</h4>
-            <a href='tel:+58000000000'>+58000000000</a>
+            <h4>{footerInfo.phoneNumberTitle}</h4>
+            <a href={`tel:${footerInfo.phoneNumber}`}>
+              {footerInfo.phoneNumber}
+            </a>
           </article>
         </nav>
         <aside>
-          <p>Todos los derechos reservados PromoZulia {year}</p>
+          <p>{footerInfo.copyright}</p>
         </aside>
       </footer>
       <style jsx>{`

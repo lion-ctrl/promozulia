@@ -1,14 +1,78 @@
-import React from 'react';
+import Image from 'next/image';
 // componets
 import BreadCrumb from 'components/Breadcrumb';
 import Layout from 'components/Layout';
-// data
-import { cardInfo, values } from 'data/usPageData';
+// http methods
+import { HOST } from 'api';
+import { getUSPageDataAPI } from 'api/pages';
 // styles
 import { addOpacity } from 'styles/utils';
 import { breakPoints, colors } from 'styles/variables';
 
-export default function Us() {
+interface UsProps {
+  data: any;
+  valueCards: {
+    id: number;
+    title: string | null;
+    text: string | null;
+    src: string | null;
+  }[];
+  promoCards: {
+    id: number;
+    title: string | null;
+    text: string | null;
+    src: string | null;
+  }[];
+  error: boolean;
+}
+
+export const getServerSideProps = async () => {
+  try {
+    const {
+      data: { data },
+    } = await getUSPageDataAPI();
+
+    const valueCards: {
+      id: number;
+      title: string | null;
+      text: string | null;
+      src: string | null;
+    }[] = [];
+
+    for (const { id, titulo, texto, imagen } of data.attributes
+      .tarjetas_valores) {
+      valueCards.push({
+        id,
+        title: titulo,
+        text: texto,
+        src: `${HOST}${imagen.data.attributes.url}`,
+      });
+    }
+
+    const promoCards: {
+      id: number;
+      title: string | null;
+      text: string | null;
+      src: string | null;
+    }[] = [];
+    for (const { id, titulo, texto, imagen } of data.attributes
+      .tarjetas_promozulia) {
+      promoCards.push({
+        id,
+        title: titulo,
+        text: texto,
+        src: `${HOST}${imagen.data.attributes.url}`,
+      });
+    }
+
+    return { props: { data, valueCards, promoCards } };
+  } catch (error: any) {
+    return { props: { message: error.message, error: true } };
+  }
+};
+
+export default function Us({ data, valueCards, promoCards, error }: UsProps) {
+  if (error) return 'No se puede cargar la página.';
   return (
     <Layout>
       <div className='container'>
@@ -16,63 +80,40 @@ export default function Us() {
       </div>
       <section id='banner-1' className='banner'>
         <div className='container'>
-          <h1>
-            Somos una ONG cuyo fin es incentivar y promocionar el desarrollo
-            Económico del Estado Zulia.
-          </h1>
+          <h1>{data.attributes.titulo}</h1>
         </div>
       </section>
       <section id='mission' className='container row'>
-        <h2 className='col-12 col-md-6'>Misión</h2>
+        <h2 className='col-12 col-md-6'>{data.attributes.titulo_mision}</h2>
         <article className='col-12 col-md-6'>
-          <p>
-            Contribuir a Detectar Necesidades y Oportunidades Tecnológicas,
-            Definir y Ejecutar Proyectos en Promozulia con los diferentes entes
-            educativos , empresariales públicos y privados para incentivar el
-            desarrollo científico, tecnológico, innovación y transferencia de
-            tecnología a nivel nacional.
-          </p>
+          <p>{data.attributes.mision}</p>
         </article>
       </section>
       <section id='vision' className='container row reverse'>
-        <h2 className='col-12 col-md-6'>Visión</h2>
+        <h2 className='col-12 col-md-6'>{data.attributes.titulo_vision}</h2>
         <article className='col-12 col-md-6'>
-          <p>
-            Ser una Comisión parte de Promozulia que propicie el captar, generar
-            y aplicar conocimiento científico y tecnológico en materia de
-            formación, innovación y sostenibilidad aplicadas al sector económico
-            del estado Zulia, apoyando a la región en sus planes estratégicos
-            que favorezcan la atracción de capital y recursos tecnológicos
-            internos y externos.
-          </p>
+          <p>{data.attributes.vision}</p>
         </article>
       </section>
       <section id='values' className='container'>
-        <h2>Valores</h2>
+        <h2>{data.attributes.titulo_valores}</h2>
         <div className='cards row'>
-          {values.map(({ Icon, content, title }) => (
-            <article key={content} className='box-shadow card col-12 col-lg-4'>
+          {valueCards.map(({ id, title, text, src }) => (
+            <article key={id} className='box-shadow card col-12 col-lg-4'>
               <h4>{title}</h4>
-              <Icon height={65} width={65} style={{ fill: colors.color1 }} />
-              <p style={{ marginBottom: 0 }}>{content}</p>
+              {src && <Image src={src} alt='image' height={65} width={65} />}
+              <p style={{ marginBottom: 0 }}>{text}</p>
             </article>
           ))}
         </div>
       </section>
       <section id='goals' className='container'>
-        <h2>
-          PromoZulia trabaja en beneficio del territorio Regional y Nacional
-        </h2>
+        <h2>{data.attributes.sub_titulo}</h2>
         <div className='cards row'>
-          {cardInfo.map(({ Icon, content, viewBox }) => (
-            <article key={content} className='box-shadow card col-12 col-md-4'>
-              <Icon
-                height={65}
-                width={65}
-                style={{ fill: colors.color1 }}
-                viewBox={viewBox}
-              />
-              <p style={{ marginBottom: 0 }}>{content}</p>
+          {promoCards.map(({ id, text, src }) => (
+            <article key={id} className='box-shadow card col-12 col-md-4'>
+              {src && <Image src={src} alt='imagen' height={65} width={65} />}
+              <p style={{ marginBottom: 0 }}>{text}</p>
             </article>
           ))}
         </div>
