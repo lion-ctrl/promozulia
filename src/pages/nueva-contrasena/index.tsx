@@ -17,17 +17,21 @@ import { colors } from 'styles/variables';
 
 export default function NuevaContrasena() {
   const router = useRouter();
-  const codeParam = router.query.code;
 
   const captchaRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [codeParam, setCodeParam] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!router.isReady) return;
+
     if (!router.query.code) {
       router.replace('/');
     }
+
+    setCodeParam(router.query.code as string);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router.isReady]);
 
   const formik = useFormik({
     initialValues: {
