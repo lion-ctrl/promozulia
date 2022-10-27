@@ -218,7 +218,8 @@ export default css.global`
   @media (min-width: ${breakPoints.md}) {
     .logo {
       font-size: 2rem;
-      height: 4.375rem;
+      height: 50px;
+      width: 120px;
     }
   }
 `;

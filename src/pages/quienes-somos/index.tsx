@@ -83,6 +83,12 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
           <h1>{data.attributes.titulo}</h1>
         </div>
       </section>
+      <section id='quienes-somos' className='container'>
+        <h2>{data.attributes.titulo_nosotros}</h2>
+        <article>
+          <p>{data.attributes.descripcion_nosotros}</p>
+        </article>
+      </section>
       <section id='mission' className='container row'>
         <h2 className='col-12 col-md-6'>{data.attributes.titulo_mision}</h2>
         <article className='col-12 col-md-6'>
@@ -152,7 +158,8 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(/assets/img/banner3.jpg);
+            url(${HOST}${data?.attributes?.imagen_banner_nosotros?.data
+              ?.attributes?.url});
           height: 500px;
           padding: 2rem 1rem;
         }

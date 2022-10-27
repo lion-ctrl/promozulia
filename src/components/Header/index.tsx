@@ -22,7 +22,7 @@ export default function Header() {
       <header>
         <nav className='container row'>
           <Link href='/'>
-            <a className='col-8 col-sm-10 col-md-3 col-lg-2'>
+            <a className='col-8 col-sm-10 col-md-2'>
               {headerInfo.logoSrc === 'ZULIA' ? (
                 <h3 className='logo'>{headerInfo.logoSrc}</h3>
               ) : (
@@ -55,12 +55,10 @@ export default function Header() {
             </div>
           </button>
           <div
-            className={`links ${
-              isMenuOpen ? 'is-active' : ''
-            } col-md-9 col-lg-10 row`}
+            className={`links ${isMenuOpen ? 'is-active' : ''} col-md-10 row`}
             onClick={() => setIsMenuOpen(false)}
           >
-            <div className='internal-links col-12 col-md-7'>
+            <div className='internal-links col-12 col-md-10'>
               {headerInfo.publicLinks.map(({ id, href, name }) => {
                 return (
                   <ActiveLink key={id} href={href} activeClassName='is-active'>
@@ -81,7 +79,7 @@ export default function Header() {
                   );
                 })}
             </div>
-            <div className='session-links col-12 col-md-5'>
+            <div className='session-links col-12 col-md-2'>
               {!isAuthenticated &&
                 headerInfo.sessionLinks.map(({ id, href, name }) => {
                   return (
@@ -185,6 +183,7 @@ export default function Header() {
 
         div.links {
           align-items: center;
+          background-color: ${colors.color1};
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -219,7 +218,7 @@ export default function Header() {
 
         @media (min-width: ${breakPoints.md}) {
           header {
-            height: 6rem;
+            height: 5rem;
           }
 
           button.header-btn {
@@ -232,7 +231,7 @@ export default function Header() {
             padding: 0.5rem 0;
             pointer-events: auto;
             position: static;
-            width: 74%;
+            width: 84%;
           }
 
           div.internal-links {
@@ -246,6 +245,7 @@ export default function Header() {
           }
 
           div.links a {
+            font-size: 0.5rem;
             overflow: hidden;
             padding: 0;
             margin-right: 0.7rem;
@@ -274,7 +274,13 @@ export default function Header() {
 
         @media (min-width: ${breakPoints.lg}) {
           div.links a {
-            margin-right: 1rem;
+            font-size: 0.7rem;
+          }
+        }
+
+        @media (min-width: ${breakPoints.xl}) {
+          div.links a {
+            font-size: 0.8rem;
           }
         }
       `}</style>
