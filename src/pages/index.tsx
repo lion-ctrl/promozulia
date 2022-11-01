@@ -8,7 +8,6 @@ import Sectors from 'components/Sectors';
 import { colors } from 'styles/variables';
 import { addOpacity } from 'styles/utils';
 // http methods
-import { HOST } from 'api';
 import { getHomePageDataAPI } from 'api/pages';
 
 interface Props {
@@ -39,7 +38,7 @@ export const getServerSideProps = async () => {
     for (const { imagen_de_fondo: backgroundImage, titulo, texto } of data
       .attributes.carusel_inicio) {
       carouselData.backgroundImages.push(
-        `${HOST}${backgroundImage.data.attributes.url}`
+        `${backgroundImage.data.attributes.url}`
       );
 
       carouselData.content.push({
@@ -53,7 +52,7 @@ export const getServerSideProps = async () => {
     for (const { id, imagen, titulo } of data.attributes.tarjetas_inicio) {
       cardsData.push({
         id,
-        src: `${HOST}${imagen.data.attributes.url}`,
+        src: `${imagen.data.attributes.url}`,
         title: titulo,
       });
     }
@@ -62,7 +61,7 @@ export const getServerSideProps = async () => {
     for (const { id, imagen, titulo } of data.attributes.carusel_sectores) {
       sectorsCarousel.push({
         id,
-        src: `${HOST}${imagen.data.attributes.url}`,
+        src: `${imagen.data.attributes.url}`,
         title: titulo,
       });
     }
@@ -136,9 +135,9 @@ export default function Home({
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${
-        data?.attributes?.imagen_banner_sub_titulo?.data?.attributes?.url
-      });
+            url(${
+              data?.attributes?.imagen_banner_sub_titulo?.data?.attributes?.url
+            });
           background-attachment: fixed;
           clip-path: ellipse(80% 100% at 50% 0%);
           height: 400px;
@@ -179,9 +178,9 @@ export default function Home({
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${
-        data?.attributes?.imagen_banner_contacto?.data?.attributes?.url
-      });
+            url(${
+              data?.attributes?.imagen_banner_contacto?.data?.attributes?.url
+            });
           height: 300px;
           margin-top: 2rem;
           padding: 2rem 1rem;

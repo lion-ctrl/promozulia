@@ -6,7 +6,6 @@ import BreadCrumb from 'components/Breadcrumb';
 // hooks
 import useViewPortWidth from 'hooks/useViewPortWidth';
 // http methods
-import { HOST } from 'api';
 import { getHistoryPageDataAPI } from 'api/pages';
 // styles
 import { addOpacity } from 'styles/utils';
@@ -203,8 +202,7 @@ export default function History({
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${data?.attributes?.imagen_banner?.data?.attributes
-              ?.url});
+            url(${data?.attributes?.imagen_banner?.data?.attributes?.url});
           height: 500px;
           padding: 2rem 1rem;
         }

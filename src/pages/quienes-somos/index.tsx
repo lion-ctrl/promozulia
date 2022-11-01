@@ -3,7 +3,6 @@ import Image from 'next/image';
 import BreadCrumb from 'components/Breadcrumb';
 import Layout from 'components/Layout';
 // http methods
-import { HOST } from 'api';
 import { getUSPageDataAPI } from 'api/pages';
 // styles
 import { addOpacity } from 'styles/utils';
@@ -45,7 +44,7 @@ export const getServerSideProps = async () => {
         id,
         title: titulo,
         text: texto,
-        src: `${HOST}${imagen.data.attributes.url}`,
+        src: `${imagen.data.attributes.url}`,
       });
     }
 
@@ -61,7 +60,7 @@ export const getServerSideProps = async () => {
         id,
         title: titulo,
         text: texto,
-        src: `${HOST}${imagen.data.attributes.url}`,
+        src: `${imagen.data.attributes.url}`,
       });
     }
 
@@ -158,8 +157,8 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${data?.attributes?.imagen_banner_nosotros?.data
-              ?.attributes?.url});
+            url(${data?.attributes?.imagen_banner_nosotros?.data?.attributes
+              ?.url});
           height: 500px;
           padding: 2rem 1rem;
         }
@@ -173,8 +172,7 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${data?.attributes?.imagen_mision?.data?.attributes
-              ?.url});
+            url(${data?.attributes?.imagen_mision?.data?.attributes?.url});
           color: ${colors.white};
           height: 200px;
         }
@@ -187,8 +185,7 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${data?.attributes?.imagen_vision?.data?.attributes
-              ?.url});
+            url(${data?.attributes?.imagen_vision?.data?.attributes?.url});
           color: ${colors.white};
           height: 200px;
         }

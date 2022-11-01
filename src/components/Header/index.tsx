@@ -11,6 +11,7 @@ import ActiveLink from 'components/ActiveLink';
 import { shimmer, toBase64 } from 'helpers';
 // styles
 import { breakPoints, colors } from 'styles/variables';
+import toast from 'react-hot-toast';
 
 export default function Header() {
   const { headerInfo } = useSelector((state: RootState) => state.app);
@@ -106,7 +107,10 @@ export default function Header() {
                     <a
                       key={id}
                       style={{ cursor: 'pointer' }}
-                      onClick={() => setAuthLogOutUser()}
+                      onClick={() => {
+                        toast.success('Sesión cerrada satisfactoriamente.');
+                        setAuthLogOutUser();
+                      }}
                     >
                       {name}
                     </a>
@@ -273,20 +277,26 @@ export default function Header() {
           }
         }
 
+        @media (min-width: ${breakPoints.md}) {
+          div.links a {
+            font-size: 0.5rem;
+          }
+        }
+
         @media (min-width: ${breakPoints.lg}) {
           div.internal-links {
             justify-content: center;
           }
 
           div.links a {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             margin-right: 0.8rem;
           }
         }
 
         @media (min-width: ${breakPoints.xl}) {
           div.links a {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             margin-right: 0.9rem;
           }
         }

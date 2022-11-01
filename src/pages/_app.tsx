@@ -16,7 +16,6 @@ import Loader from 'components/Loader';
 // libraries
 import toast, { Toaster } from 'react-hot-toast';
 // http methods
-import { HOST } from 'api';
 import { getFooterDataAPI, getHeaderDataAPI } from 'api/components';
 import { getCurrentUserAPI } from 'api/auth';
 // styles
@@ -85,7 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         }
 
         setAppHeaderInfo({
-          logoSrc: `${HOST}${headerData.attributes.logo.data.attributes.url}`,
+          logoSrc: `${headerData.attributes.logo.data.attributes.url}`,
           publicLinks,
           sessionLinks,
           privateLinks,
@@ -93,7 +92,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         });
 
         setAppFooterInfo({
-          logoSrc: `${HOST}${footerData.attributes.logo.data.attributes.url}`,
+          logoSrc: `${footerData.attributes.logo.data.attributes.url}`,
           directionTitle: footerData.attributes.titulo_direccion,
           direction: footerData.attributes.direccion,
           phoneNumberTitle: footerData.attributes.titulo_numero_telefono,

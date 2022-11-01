@@ -3,7 +3,6 @@ import Image from 'next/image';
 import BreadCrumb from 'components/Breadcrumb';
 import Layout from 'components/Layout';
 // http methods
-import { HOST } from 'api';
 import { getServicesPageDataAPI } from 'api/pages';
 // styles
 import { addOpacity } from 'styles/utils';
@@ -39,7 +38,7 @@ export const getServerSideProps = async () => {
         id,
         title: titulo,
         text: texto,
-        src: `${HOST}${imagen.data.attributes.url}`,
+        src: `${imagen.data.attributes.url}`,
       });
     }
 
@@ -111,8 +110,8 @@ export default function Services({
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(${HOST}${data?.attributes?.imagen_banner_servicios?.data
-              ?.attributes?.url});
+            url(${data?.attributes?.imagen_banner_servicios?.data?.attributes
+              ?.url});
           background-position: center 20%;
           height: 500px;
           padding: 2rem 1rem;
