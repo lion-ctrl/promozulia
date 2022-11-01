@@ -6,7 +6,7 @@ export const breakPoints = {
 };
 
 export const colors = {
-  color1: "#004182",
+  color1: "#334257",
   color2: "#A27B5C",
   color3: "#3F4E4F",
   color4: "#004182",

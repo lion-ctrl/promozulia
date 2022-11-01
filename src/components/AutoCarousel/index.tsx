@@ -14,7 +14,7 @@ interface Props {
   content: {
     title: string;
     text?: string;
-    type: string;
+    fontSize?: string;
   }[];
   height: string;
   width: string;
@@ -113,7 +113,7 @@ export default function AutoCarousel({
         <div className='carousel-slider'>
           {backgroundImages.map((bg, i) => (
             <div
-              key={bg}
+              key={`${bg}-${i}`}
               className={`carousel-slide-container ${
                 state.active === i ? 'is-active' : 'is-not-active'
               }`}
@@ -140,11 +140,11 @@ export default function AutoCarousel({
                 state.isAnimateContent ? 'fade-in-down' : 'fade-out-down'
               }
             >
-              {content.map(({ title, text, type }, i) => {
+              {content.map(({ title, text, fontSize }, i) => {
                 return (
                   state.activeContent === i && (
-                    <React.Fragment key={title}>
-                      <h4 className={`${type}-font-size`}>{title}</h4>
+                    <React.Fragment key={`${title}-${i}`}>
+                      <h4 className={fontSize || 'small-size'}>{title}</h4>
                       {text && <p>{text}</p>}
                     </React.Fragment>
                   )
@@ -254,11 +254,11 @@ export default function AutoCarousel({
           text-align: center;
         }
 
-        h4.h1-font-size {
+        h4.big-size {
           font-size: clamp(1.5rem, calc(1.16rem + 1.96vw), 2.63rem);
         }
 
-        h4.h3-font-size {
+        h4.small-size {
           font-size: clamp(1.25rem, calc(0.91rem + 1.96vw), 2.38rem);
         }
 

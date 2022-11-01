@@ -1,14 +1,59 @@
-import React from 'react';
+import Image from 'next/image';
 // componets
 import BreadCrumb from 'components/Breadcrumb';
 import Layout from 'components/Layout';
-// data
-import { services } from 'data/servicePage';
+// http methods
+import { getServicesPageDataAPI } from 'api/pages';
 // styles
 import { addOpacity } from 'styles/utils';
 import { colors } from 'styles/variables';
 
-export default function Services() {
+interface ServicesProps {
+  data: any;
+  servicesCards: {
+    id: number;
+    title: string | null;
+    text: string | null;
+    src: string | null;
+  }[];
+  error: boolean;
+}
+
+export const getServerSideProps = async () => {
+  try {
+    const {
+      data: { data },
+    } = await getServicesPageDataAPI();
+
+    const servicesCards: {
+      id: number;
+      title: string | null;
+      text: string | null;
+      src: string | null;
+    }[] = [];
+
+    for (const { id, titulo, texto, imagen } of data.attributes
+      .tarjetas_servicios) {
+      servicesCards.push({
+        id,
+        title: titulo,
+        text: texto,
+        src: `${imagen.data.attributes.url}`,
+      });
+    }
+
+    return { props: { data, servicesCards } };
+  } catch (error: any) {
+    return { props: { message: error.message, error: true } };
+  }
+};
+
+export default function Services({
+  data,
+  servicesCards,
+  error,
+}: ServicesProps) {
+  if (error) return 'No se puede cargar la página.';
   return (
     <Layout>
       <div className='container'>
@@ -16,17 +61,20 @@ export default function Services() {
       </div>
       <section id='banner-1' className='banner'>
         <div className='container'>
-          <h1>Nuestro principal servicio es de tipo asesoría.</h1>
+          <h1>{data.attributes.titulo}</h1>
         </div>
       </section>
       <section id='values' className='container'>
-        <h2>Servicios</h2>
-        <div className='cards row'>
-          {services.map(({ Icon, content, title }) => (
-            <article key={content} className='box-shadow card col-12 col-lg-4'>
+        <h2>{data.attributes.sub_titulo}</h2>
+        <div className='cards row' style={{ justifyContent: 'space-evenly' }}>
+          {servicesCards.map(({ id, title, text, src }) => (
+            <article
+              key={id}
+              className='box-shadow card col-12 col-sm-6 col-lg-3'
+            >
               <h4>{title}</h4>
-              <Icon height={65} width={65} style={{ fill: colors.color1 }} />
-              <p style={{ marginBottom: 0 }}>{content}</p>
+              {src && <Image src={src} alt='imagen' height={65} width={65} />}
+              <p style={{ marginBottom: 0 }}>{text}</p>
             </article>
           ))}
         </div>
@@ -62,7 +110,8 @@ export default function Services() {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(/assets/img/banner4.jpg);
+            url(${data?.attributes?.imagen_banner_servicios?.data?.attributes
+              ?.url});
           background-position: center 20%;
           height: 500px;
           padding: 2rem 1rem;
@@ -75,12 +124,3 @@ export default function Services() {
     </Layout>
   );
 }
-
-/*  Apoyamos el
-            Desarrollo de la educación, enfocados en las necesidades de las
-            empresas. 
-            
-            
-            Apoyo funcional para establecer y desarrollar relaciones
-            entre las empresas en pro del desarrollo de las potencialidades del
-            estado Zulia */

@@ -1,15 +1,16 @@
-import React from 'react';
+import Image from 'next/image';
 import Slider from 'react-slick';
-// data
-import { sectorsData } from 'data/homePageData';
 // styles
 import { breakPoints, colors } from 'styles/variables';
 
 const carouseSettings = {
   arrows: true,
+  autoplay: true,
+  autoplaySpeed: 5000,
   dots: false,
   infinite: true,
   initialSlide: 0,
+  pauseOnHover: true,
   slidesToScroll: 1,
   slidesToShow: 7,
   speed: 500,
@@ -47,18 +48,24 @@ const carouseSettings = {
   ],
 };
 
-export default function Sectors() {
+export default function Sectors({
+  content,
+}: {
+  content: { id: number; title: string | null; src: string | null }[];
+}) {
   return (
     <>
       <section id='sectors' className='container'>
         <Slider {...carouseSettings}>
-          {sectorsData.map(({ Icon, content, viewBox }) => (
-            <div key={content}>
+          {content.map(({ id, title, src }) => (
+            <div key={id}>
               <article>
                 <div className='icon-container'>
-                  <Icon style={{ fill: colors.white }} viewBox={viewBox} />
+                  {src && (
+                    <Image src={src} alt='imagen' height={47} width={47} />
+                  )}
                 </div>
-                <p>{content}</p>
+                <p>{title}</p>
               </article>
             </div>
           ))}
