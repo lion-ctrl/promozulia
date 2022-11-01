@@ -24,3 +24,11 @@ export const getServicesPageDataAPI = (): Promise<AxiosResponse> => {
   URI += `&populate[1]=tarjetas_servicios&populate[2]=tarjetas_servicios.imagen`;
   return API.get(URI);
 };
+
+export const getHistoryPageDataAPI = (): Promise<AxiosResponse> => {
+  let URI = `/pagina-historia`;
+  URI += `?populate[0]=imagen_banner`;
+  URI += `&populate[1]=tarjetas`;
+  URI += `&populate[2]=tarjetas_logros`;
+  return API.get(URI);
+};

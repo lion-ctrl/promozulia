@@ -11,7 +11,7 @@ import { addOpacity } from 'styles/utils';
 import { HOST } from 'api';
 import { getHomePageDataAPI } from 'api/pages';
 
-interface HomeProps {
+interface Props {
   data: any;
   carouselData: {
     backgroundImages: string[];
@@ -79,7 +79,7 @@ export default function Home({
   cardsData,
   sectorsCarousel,
   error,
-}: HomeProps) {
+}: Props) {
   if (error) return 'No se puede cargar la página.';
 
   return (

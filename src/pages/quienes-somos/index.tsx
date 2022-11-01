@@ -173,7 +173,8 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(/assets/img/mission.jpg);
+            url(${HOST}${data?.attributes?.imagen_mision?.data?.attributes
+              ?.url});
           color: ${colors.white};
           height: 200px;
         }
@@ -186,7 +187,8 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%,
               ${addOpacity({ color: colors.color1, opacity: 0.5 })} 50%
             ),
-            url(/assets/img/vision.jpg);
+            url(${HOST}${data?.attributes?.imagen_vision?.data?.attributes
+              ?.url});
           color: ${colors.white};
           height: 200px;
         }

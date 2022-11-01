@@ -152,9 +152,11 @@ export default css.global`
     transition: all 0.5s ease-in-out;
   }
 
-  .button:hover {
-    background-color: ${addOpacity({ color: colors.color1, opacity: 0.8 })};
-    opacity: 1;
+  @media (hover: hover) {
+    .button:hover {
+      background-color: ${addOpacity({ color: colors.color1, opacity: 0.8 })};
+      opacity: 1;
+    }
   }
 
   /* --- card --- */
@@ -218,8 +220,14 @@ export default css.global`
   @media (min-width: ${breakPoints.md}) {
     .logo {
       font-size: 2rem;
-      height: 50px;
-      width: 120px;
+      height: 3.125rem;
+      width: 5rem;
+    }
+  }
+
+  @media (min-width: ${breakPoints.lg}) {
+    .logo {
+      width: 7.5rem;
     }
   }
 `;

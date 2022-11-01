@@ -58,7 +58,7 @@ export default function Header() {
             className={`links ${isMenuOpen ? 'is-active' : ''} col-md-10 row`}
             onClick={() => setIsMenuOpen(false)}
           >
-            <div className='internal-links col-12 col-md-10'>
+            <div className='internal-links col-12 col-md-9'>
               {headerInfo.publicLinks.map(({ id, href, name }) => {
                 return (
                   <ActiveLink key={id} href={href} activeClassName='is-active'>
@@ -79,7 +79,7 @@ export default function Header() {
                   );
                 })}
             </div>
-            <div className='session-links col-12 col-md-2'>
+            <div className='session-links col-12 col-md-3'>
               {!isAuthenticated &&
                 headerInfo.sessionLinks.map(({ id, href, name }) => {
                   return (
@@ -119,6 +119,7 @@ export default function Header() {
       <style jsx>{`
         header {
           background-color: ${colors.color1};
+          border-bottom: 1px solid ${colors.black};
           height: 5rem;
           padding: 10px 0;
           position: sticky;
@@ -132,21 +133,9 @@ export default function Header() {
           border: none;
           cursor: pointer;
           display: flex;
-          justify-content: center;
+          justify-content: flex-end;
           outline: none;
           padding: 0.5rem;
-        }
-
-        .header-btn.is-active .line1 {
-          transform: rotate(45deg);
-        }
-
-        .header-btn.is-active .line2 {
-          transform: scaleY(0);
-        }
-
-        .header-btn.is-active .line3 {
-          transform: rotate(-45deg);
         }
 
         .header-hamburger {
@@ -181,6 +170,18 @@ export default function Header() {
           transition: transform 0.4s ease-in-out;
         }
 
+        .header-btn.is-active .line1 {
+          transform: rotate(45deg);
+        }
+
+        .header-btn.is-active .line2 {
+          transform: scaleY(0);
+        }
+
+        .header-btn.is-active .line3 {
+          transform: rotate(-45deg);
+        }
+
         div.links {
           align-items: center;
           background-color: ${colors.color1};
@@ -193,7 +194,7 @@ export default function Header() {
           pointer-events: none;
           position: fixed;
           row-gap: 3rem;
-          top: 4.8rem;
+          top: 5rem;
           transition: opacity 0.5s ease-in-out;
           width: 100%;
         }
@@ -217,10 +218,6 @@ export default function Header() {
         }
 
         @media (min-width: ${breakPoints.md}) {
-          header {
-            height: 5rem;
-          }
-
           button.header-btn {
             display: none;
           }
@@ -235,8 +232,9 @@ export default function Header() {
           }
 
           div.internal-links {
+            align-items: center;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
           }
 
           div.session-links {
@@ -244,11 +242,14 @@ export default function Header() {
             justify-content: flex-end;
           }
 
+          div.links div.session-links a:not(:last-of-type) {
+            margin-right: 0.7rem;
+          }
+
           div.links a {
-            font-size: 0.5rem;
+            font-size: 0.6rem;
             overflow: hidden;
             padding: 0;
-            margin-right: 0.7rem;
           }
 
           div.links a:last-of-type {
@@ -273,14 +274,20 @@ export default function Header() {
         }
 
         @media (min-width: ${breakPoints.lg}) {
+          div.internal-links {
+            justify-content: center;
+          }
+
           div.links a {
             font-size: 0.7rem;
+            margin-right: 0.8rem;
           }
         }
 
         @media (min-width: ${breakPoints.xl}) {
           div.links a {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            margin-right: 0.9rem;
           }
         }
       `}</style>
