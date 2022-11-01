@@ -1,6 +1,6 @@
 import React from 'react';
 import { colors } from 'styles/variables';
-import { Xcircle } from 'components/icons';
+import { Xcircle } from 'components/Icons';
 
 export default function Modal({
   title,
