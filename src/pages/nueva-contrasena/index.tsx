@@ -92,7 +92,7 @@ export default function NuevaContrasena() {
   return (
     <PublicRoute>
       <Layout>
-        {loading && <Loading title='Enviando...' />}
+        {loading && <Loading title='Enviando...' color='white' />}
         <section className='container'>
           <h1>Nueva contraseña</h1>
           <form className='row' onSubmit={formik.handleSubmit}>

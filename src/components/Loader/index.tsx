@@ -1,95 +1,179 @@
 import React from 'react';
 import { colors } from 'styles/variables';
 
-export default function Loader() {
+export default function Loader({
+  size = 'normal',
+  color = 'primary',
+}: {
+  size?: 'small' | 'normal' | 'big';
+  color?: 'primary' | 'white';
+}) {
+  const setSize = size === 'small' ? '20px' : size === 'big' ? '60px' : '40px';
+  const setColor = color === 'primary' ? colors.color1 : colors.white;
   return (
     <>
-      <div className='sk-cube-grid'>
-        <div className='sk-cube sk-cube1'></div>
-        <div className='sk-cube sk-cube2'></div>
-        <div className='sk-cube sk-cube3'></div>
-        <div className='sk-cube sk-cube4'></div>
-        <div className='sk-cube sk-cube5'></div>
-        <div className='sk-cube sk-cube6'></div>
-        <div className='sk-cube sk-cube7'></div>
-        <div className='sk-cube sk-cube8'></div>
-        <div className='sk-cube sk-cube9'></div>
+      <div className='sk-circle'>
+        <div className='sk-circle1 sk-child'></div>
+        <div className='sk-circle2 sk-child'></div>
+        <div className='sk-circle3 sk-child'></div>
+        <div className='sk-circle4 sk-child'></div>
+        <div className='sk-circle5 sk-child'></div>
+        <div className='sk-circle6 sk-child'></div>
+        <div className='sk-circle7 sk-child'></div>
+        <div className='sk-circle8 sk-child'></div>
+        <div className='sk-circle9 sk-child'></div>
+        <div className='sk-circle10 sk-child'></div>
+        <div className='sk-circle11 sk-child'></div>
+        <div className='sk-circle12 sk-child'></div>
       </div>
       <style jsx>{`
-        .sk-cube-grid {
-          width: 40px;
-          height: 40px;
-          margin: 50px auto;
+        .sk-circle {
+          margin: 100px auto;
+          width: ${setSize};
+          height: ${setSize};
+          position: relative;
+        }
+        .sk-circle .sk-child {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        .sk-circle .sk-child:before {
+          content: '';
+          display: block;
+          margin: 0 auto;
+          width: 15%;
+          height: 15%;
+          background-color: ${setColor};
+          border-radius: 100%;
+          -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
+          animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
+        }
+        .sk-circle .sk-circle2 {
+          -webkit-transform: rotate(30deg);
+          -ms-transform: rotate(30deg);
+          transform: rotate(30deg);
+        }
+        .sk-circle .sk-circle3 {
+          -webkit-transform: rotate(60deg);
+          -ms-transform: rotate(60deg);
+          transform: rotate(60deg);
+        }
+        .sk-circle .sk-circle4 {
+          -webkit-transform: rotate(90deg);
+          -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+        }
+        .sk-circle .sk-circle5 {
+          -webkit-transform: rotate(120deg);
+          -ms-transform: rotate(120deg);
+          transform: rotate(120deg);
+        }
+        .sk-circle .sk-circle6 {
+          -webkit-transform: rotate(150deg);
+          -ms-transform: rotate(150deg);
+          transform: rotate(150deg);
+        }
+        .sk-circle .sk-circle7 {
+          -webkit-transform: rotate(180deg);
+          -ms-transform: rotate(180deg);
+          transform: rotate(180deg);
+        }
+        .sk-circle .sk-circle8 {
+          -webkit-transform: rotate(210deg);
+          -ms-transform: rotate(210deg);
+          transform: rotate(210deg);
+        }
+        .sk-circle .sk-circle9 {
+          -webkit-transform: rotate(240deg);
+          -ms-transform: rotate(240deg);
+          transform: rotate(240deg);
+        }
+        .sk-circle .sk-circle10 {
+          -webkit-transform: rotate(270deg);
+          -ms-transform: rotate(270deg);
+          transform: rotate(270deg);
+        }
+        .sk-circle .sk-circle11 {
+          -webkit-transform: rotate(300deg);
+          -ms-transform: rotate(300deg);
+          transform: rotate(300deg);
+        }
+        .sk-circle .sk-circle12 {
+          -webkit-transform: rotate(330deg);
+          -ms-transform: rotate(330deg);
+          transform: rotate(330deg);
+        }
+        .sk-circle .sk-circle2:before {
+          -webkit-animation-delay: -1.1s;
+          animation-delay: -1.1s;
+        }
+        .sk-circle .sk-circle3:before {
+          -webkit-animation-delay: -1s;
+          animation-delay: -1s;
+        }
+        .sk-circle .sk-circle4:before {
+          -webkit-animation-delay: -0.9s;
+          animation-delay: -0.9s;
+        }
+        .sk-circle .sk-circle5:before {
+          -webkit-animation-delay: -0.8s;
+          animation-delay: -0.8s;
+        }
+        .sk-circle .sk-circle6:before {
+          -webkit-animation-delay: -0.7s;
+          animation-delay: -0.7s;
+        }
+        .sk-circle .sk-circle7:before {
+          -webkit-animation-delay: -0.6s;
+          animation-delay: -0.6s;
+        }
+        .sk-circle .sk-circle8:before {
+          -webkit-animation-delay: -0.5s;
+          animation-delay: -0.5s;
+        }
+        .sk-circle .sk-circle9:before {
+          -webkit-animation-delay: -0.4s;
+          animation-delay: -0.4s;
+        }
+        .sk-circle .sk-circle10:before {
+          -webkit-animation-delay: -0.3s;
+          animation-delay: -0.3s;
+        }
+        .sk-circle .sk-circle11:before {
+          -webkit-animation-delay: -0.2s;
+          animation-delay: -0.2s;
+        }
+        .sk-circle .sk-circle12:before {
+          -webkit-animation-delay: -0.1s;
+          animation-delay: -0.1s;
         }
 
-        .sk-cube-grid .sk-cube {
-          width: 33%;
-          height: 33%;
-          background-color: ${colors.color1};
-          float: left;
-          -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-          animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-        }
-        .sk-cube-grid .sk-cube1 {
-          -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s;
-        }
-        .sk-cube-grid .sk-cube2 {
-          -webkit-animation-delay: 0.3s;
-          animation-delay: 0.3s;
-        }
-        .sk-cube-grid .sk-cube3 {
-          -webkit-animation-delay: 0.4s;
-          animation-delay: 0.4s;
-        }
-        .sk-cube-grid .sk-cube4 {
-          -webkit-animation-delay: 0.1s;
-          animation-delay: 0.1s;
-        }
-        .sk-cube-grid .sk-cube5 {
-          -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s;
-        }
-        .sk-cube-grid .sk-cube6 {
-          -webkit-animation-delay: 0.3s;
-          animation-delay: 0.3s;
-        }
-        .sk-cube-grid .sk-cube7 {
-          -webkit-animation-delay: 0s;
-          animation-delay: 0s;
-        }
-        .sk-cube-grid .sk-cube8 {
-          -webkit-animation-delay: 0.1s;
-          animation-delay: 0.1s;
-        }
-        .sk-cube-grid .sk-cube9 {
-          -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s;
-        }
-
-        @-webkit-keyframes sk-cubeGridScaleDelay {
+        @-webkit-keyframes sk-circleBounceDelay {
           0%,
-          70%,
+          80%,
           100% {
-            -webkit-transform: scale3D(1, 1, 1);
-            transform: scale3D(1, 1, 1);
+            -webkit-transform: scale(0);
+            transform: scale(0);
           }
-          35% {
-            -webkit-transform: scale3D(0, 0, 1);
-            transform: scale3D(0, 0, 1);
+          40% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
           }
         }
 
-        @keyframes sk-cubeGridScaleDelay {
+        @keyframes sk-circleBounceDelay {
           0%,
-          70%,
+          80%,
           100% {
-            -webkit-transform: scale3D(1, 1, 1);
-            transform: scale3D(1, 1, 1);
+            -webkit-transform: scale(0);
+            transform: scale(0);
           }
-          35% {
-            -webkit-transform: scale3D(0, 0, 1);
-            transform: scale3D(0, 0, 1);
+          40% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
           }
         }
       `}</style>

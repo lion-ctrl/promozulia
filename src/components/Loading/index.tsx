@@ -2,12 +2,18 @@ import Loader from 'components/Loader';
 import React from 'react';
 import { colors } from 'styles/variables';
 
-export default function Loading({ title = 'Cargando...' }: { title: string }) {
+export default function Loading({
+  title = 'Cargando...',
+  color,
+}: {
+  title: string;
+  color?: 'primary' | 'white';
+}) {
   return (
     <>
       <div className='overlay'>
         <div className='content'>
-          <Loader />
+          <Loader size='big' color={color} />
           <h3>{title}</h3>
         </div>
       </div>

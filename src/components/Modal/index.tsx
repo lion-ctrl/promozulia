@@ -45,7 +45,7 @@ export default function Modal({
           position: fixed;
           right: 0;
           top: 80px;
-          z-index: 1500;
+          z-index: 500;
         }
 
         .content {

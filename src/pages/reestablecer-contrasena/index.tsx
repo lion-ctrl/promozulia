@@ -69,7 +69,7 @@ export default function ReestablecerContrasena() {
   return (
     <PublicRoute>
       <Layout>
-        {loading && <Loading title='Enviando...' />}
+        {loading && <Loading title='Enviando...' color='white' />}
         <section className='container'>
           <h1>Recuperar contraseña</h1>
           <form className='row' onSubmit={formik.handleSubmit}>

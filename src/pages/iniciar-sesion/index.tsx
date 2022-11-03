@@ -78,7 +78,7 @@ export default function IniciarSesion() {
   return (
     <PublicRoute>
       <Layout>
-        {loading && <Loading title='Enviando...' />}
+        {loading && <Loading title='Enviando...' color='white' />}
         <div className='container'>
           <BreadCrumb title='PromoZulia' />
         </div>
@@ -202,10 +202,27 @@ export default function IniciarSesion() {
           </form>
         </section>
         <style jsx>{`
+          section {
+            margin-top: 2rem;
+            margin-bottom: 4rem;
+          }
+
           h1 {
             color: ${colors.color1};
-            margin: 2rem 0;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            position: relative;
             text-align: center;
+          }
+
+          h1::after {
+            background-color: ${colors.color1};
+            bottom: 0;
+            content: '';
+            height: 2px;
+            left: 0;
+            position: absolute;
+            width: 100%;
           }
 
           form {
