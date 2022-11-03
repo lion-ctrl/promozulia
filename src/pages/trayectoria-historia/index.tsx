@@ -193,7 +193,19 @@ export default function History({
         h2 {
           color: ${colors.color1};
           margin-bottom: 4rem;
+          padding-bottom: 1rem;
+          position: relative;
           text-align: center;
+        }
+
+        h2::after {
+          background-color: ${colors.color1};
+          bottom: 0;
+          content: '';
+          height: 2px;
+          left: 0;
+          position: absolute;
+          width: 100%;
         }
 
         section#banner-1 {

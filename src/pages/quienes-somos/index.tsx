@@ -89,13 +89,13 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
         </article>
       </section>
       <section id='mission' className='container row'>
-        <h2 className='col-12 col-md-6'>{data.attributes.titulo_mision}</h2>
+        <h3 className='col-12 col-md-6'>{data.attributes.titulo_mision}</h3>
         <article className='col-12 col-md-6'>
           <p>{data.attributes.mision}</p>
         </article>
       </section>
       <section id='vision' className='container row reverse'>
-        <h2 className='col-12 col-md-6'>{data.attributes.titulo_vision}</h2>
+        <h3 className='col-12 col-md-6'>{data.attributes.titulo_vision}</h3>
         <article className='col-12 col-md-6'>
           <p>{data.attributes.vision}</p>
         </article>
@@ -130,6 +130,24 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
         }
 
         h2 {
+          color: ${colors.color1};
+          margin-bottom: 4rem;
+          padding-bottom: 1rem;
+          position: relative;
+          text-align: center;
+        }
+
+        h2::after {
+          background-color: ${colors.color1};
+          bottom: 0;
+          content: '';
+          height: 2px;
+          left: 0;
+          position: absolute;
+          width: 100%;
+        }
+
+        h3 {
           align-items: center;
           color: ${colors.color1};
           display: flex;
@@ -163,7 +181,7 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
           padding: 2rem 1rem;
         }
 
-        section#mission h2 {
+        section#mission h3 {
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;
@@ -176,7 +194,7 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
           color: ${colors.white};
           height: 200px;
         }
-        section#vision h2 {
+        section#vision h3 {
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;
@@ -188,6 +206,11 @@ export default function Us({ data, valueCards, promoCards, error }: UsProps) {
             url(${data?.attributes?.imagen_vision?.data?.attributes?.url});
           color: ${colors.white};
           height: 200px;
+        }
+
+        section#mission p,
+        section#vision p {
+          margin: 0;
         }
 
         div.cards {

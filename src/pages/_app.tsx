@@ -108,59 +108,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     queryAPI();
   }, []);
 
-  const Loading = ({ children }: { children: React.ReactNode }) => {
-    const router = useRouter();
-    const { accessToken } = useSelector((state: RootState) => state.auth);
-    const { loading } = useSelector((state: RootState) => state.app);
-
-    useEffect(() => {
-      if (!router.isReady) return;
-      if (!accessToken) return;
-      const queryAPI = async () => {
-        try {
-          const res = await getCurrentUserAPI({ accessToken });
-          delete res.data.confirmed;
-          delete res.data.createdAt;
-          delete res.data.provider;
-          delete res.data.updatedAt;
-          setAuthRefreshUser({ user: res.data });
-        } catch (error: any) {
-          setAuthLogOutUser();
-          toast.error('Error: Acceso invalido.');
-        }
-      };
-      queryAPI();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [router.isReady]);
-
-    if (loading) {
-      return (
-        <div
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            height: '95vh',
-            justifyContent: 'center',
-          }}
-        >
-          <Loader />
-          <h3
-            style={{
-              color: colors.color1,
-              fontSize: 'clamp(1.25rem, calc(0.91rem + 1.96vw), 2.38rem)',
-              fontWeight: 'bold',
-            }}
-          >
-            PromoZulia
-          </h3>
-        </div>
-      );
-    }
-
-    return <>{children}</>;
-  };
-
   return (
     <Provider store={store}>
       <Loading>
@@ -177,5 +124,58 @@ function MyApp({ Component, pageProps }: AppProps) {
     </Provider>
   );
 }
+
+const Loading = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector((state: RootState) => state.app);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (!accessToken) return;
+    const queryAPI = async () => {
+      try {
+        const res = await getCurrentUserAPI({ accessToken });
+        delete res.data.confirmed;
+        delete res.data.createdAt;
+        delete res.data.provider;
+        delete res.data.updatedAt;
+        setAuthRefreshUser({ user: res.data });
+      } catch (error: any) {
+        setAuthLogOutUser();
+        toast.error('Error: Acceso invalido.');
+      }
+    };
+    queryAPI();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '95vh',
+          justifyContent: 'center',
+        }}
+      >
+        <Loader size='big' />
+        <h3
+          style={{
+            color: colors.color1,
+            fontSize: 'clamp(1.25rem, calc(0.91rem + 1.96vw), 2.38rem)',
+            fontWeight: 'bold',
+          }}
+        >
+          PromoZulia
+        </h3>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+};
 
 export default MyApp;

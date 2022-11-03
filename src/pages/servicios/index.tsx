@@ -86,12 +86,21 @@ export default function Services({
         }
 
         h2 {
-          align-items: center;
           color: ${colors.color1};
-          display: flex;
-          justify-content: center;
-          margin-top: 2rem;
+          margin-bottom: 4rem;
+          padding-bottom: 1rem;
+          position: relative;
           text-align: center;
+        }
+
+        h2::after {
+          background-color: ${colors.color1};
+          bottom: 0;
+          content: '';
+          height: 2px;
+          left: 0;
+          position: absolute;
+          width: 100%;
         }
 
         h4 {
@@ -117,8 +126,9 @@ export default function Services({
           padding: 2rem 1rem;
         }
 
-        div.cards {
-          margin: 2rem 0;
+        section#values {
+          margin-top: 4rem;
+          margin-bottom: 4rem;
         }
       `}</style>
     </Layout>
