@@ -1,35 +1,63 @@
 import React from 'react';
-import { colors } from 'styles/variables';
+import Image from 'next/image';
+// components
 import { Xcircle } from 'components/Icons';
+// helpers
+import { shimmer, toBase64 } from 'helpers';
+// interfces
+import { ImageType } from 'interface';
+// styles
+import { colors } from 'styles/variables';
 
 export default function Modal({
   title,
   content,
+  image,
   setShowModal,
 }: {
   title: string;
   content: string;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  image?: ImageType;
+  setShowModal: () => void;
 }) {
   return (
     <>
-      <div className='modal'>
+      <div
+        className='modal'
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setShowModal();
+          }
+        }}
+      >
         <div className='content fade-in-down'>
           <div className='header'>
-            <h2>
-              {title}
-              <div
-                style={{ height: '30px', width: '30px', cursor: 'pointer' }}
-                onClick={() => {
-                  setShowModal(false);
-                }}
-              >
-                <Xcircle />
-              </div>
-            </h2>
+            <h2>{title}</h2>
+            <div
+              className='close-modal-icon'
+              onClick={() => {
+                setShowModal();
+              }}
+            >
+              <Xcircle />
+            </div>
           </div>
           <div className='body'>
-            <p dangerouslySetInnerHTML={{ __html: content }} />
+            {image?.data && (
+              <div className='img-container'>
+                <Image
+                  src={image.data.attributes.url}
+                  alt='image'
+                  layout='fill'
+                  objectFit='cover'
+                  placeholder='blur'
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                    shimmer('100%', '100%')
+                  )}`}
+                />
+              </div>
+            )}
+            <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
         </div>
       </div>
@@ -53,13 +81,14 @@ export default function Modal({
           border-radius: 5px;
           display: flex;
           flex-direction: column;
-          max-height: 80vh;
+          height: 80vh;
           width: 90%;
         }
 
         .header {
           border-bottom: 1px solid ${colors.black};
           padding: 1rem;
+          position: relative;
         }
 
         .header h2 {
@@ -68,10 +97,25 @@ export default function Modal({
           justify-content: space-between;
         }
 
+        .close-modal-icon {
+          cursor: pointer;
+          height: 30px;
+          position: absolute;
+          right: 5px;
+          top: 5px;
+          width: 30px;
+        }
+
         .body {
           flex: 1;
           overflow: auto;
           padding: 1rem;
+        }
+
+        div.img-container {
+          height: 300px;
+          position: relative;
+          width: 100%;
         }
       `}</style>
     </>
