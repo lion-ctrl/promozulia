@@ -99,7 +99,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           phoneNumber: footerData.attributes.numero_telefono,
           copyright: footerData.attributes.copyright,
         });
-      } catch (error) {
+      } catch (error: any) {
         toast.error('Error: no se cargo la página correctamente.');
       }
 
@@ -110,7 +110,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <Loading>
+      <AuthGuard>
         <Toaster
           position='top-center'
           containerStyle={{ top: '12%', textAlign: 'center' }}
@@ -120,12 +120,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <style jsx global>
           {globalStyles}
         </style>
-      </Loading>
+      </AuthGuard>
     </Provider>
   );
 }
 
-const Loading = ({ children }: { children: React.ReactNode }) => {
+const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const { loading } = useSelector((state: RootState) => state.app);

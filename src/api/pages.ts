@@ -28,8 +28,7 @@ export const getServicesPageDataAPI = (): Promise<AxiosResponse> => {
 export const getHistoryPageDataAPI = (): Promise<AxiosResponse> => {
   let URI = `/pagina-historia`;
   URI += `?populate[0]=imagen_banner`;
-  URI += `&populate[1]=tarjetas`;
-  URI += `&populate[2]=tarjetas_logros`;
+  URI += `&populate[1]=tarjetas&populate[2]=tarjetas.imagen`;
   return API.get(URI);
 };
 
@@ -37,6 +36,5 @@ export const getInitiativesPageDataAPI = (): Promise<AxiosResponse> => {
   let URI = `/pagina-iniciativa`;
   URI += `?populate[0]=imagen_banner`;
   URI += `&populate[1]=consejos&populate[2]=consejos.imagen`;
-  // URI += `&populate[3]=programas_proyectos&populate[4]=programas_proyectos.imagen`;
   return API.get(URI);
 };

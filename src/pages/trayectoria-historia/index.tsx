@@ -1,72 +1,100 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import Image from 'next/image';
 // components
 import Layout from 'components/Layout';
 import Modal from 'components/Modal';
 import BreadCrumb from 'components/Breadcrumb';
+import Loader from 'components/Loader';
+// helpers
+import { shimmer, toBase64 } from 'helpers';
+// interfaces
+import { CardType, CollectionType, ImageType } from 'interface';
 // hooks
 import useViewPortWidth from 'hooks/useViewPortWidth';
 // http methods
 import { getHistoryPageDataAPI } from 'api/pages';
+import { getAchievementsDataAPI } from 'api/collections';
 // styles
 import { addOpacity } from 'styles/utils';
 import { breakPoints, colors, fluidFontSizes } from 'styles/variables';
-
-interface Card {
-  id: number;
-  date?: string;
-  title: string;
-  content: string;
-}
+import toast from 'react-hot-toast';
 
 interface Props {
-  data: any;
-  cards: Card[];
-  cardsAchievement: Card[];
+  data: {
+    id: number;
+    attributes: {
+      titulo: string;
+      titulo_banner: string;
+      titulo_logros: string;
+      imagen_banner: ImageType;
+      tarjetas: CardType[];
+    };
+  };
+  achievements: CollectionType<{
+    titulo: string;
+    contenido: string;
+    imagen: ImageType;
+    fecha?: string;
+  }>;
   error: boolean;
 }
 
 export const getServerSideProps = async () => {
   try {
-    const {
-      data: { data },
-    } = await getHistoryPageDataAPI();
+    const [
+      {
+        data: { data },
+      },
+      { data: achievements },
+    ] = await Promise.all([
+      getHistoryPageDataAPI(),
+      getAchievementsDataAPI({ page: 1, pageSize: 4 }),
+    ]);
 
-    const cards: Card[] = [];
-    const cardsAchievement: Card[] = [];
-
-    for (const { id, fecha, titulo, contenido } of data.attributes.tarjetas) {
-      cards.push({
-        id,
-        date: fecha,
-        title: titulo,
-        content: contenido,
-      });
-    }
-
-    for (const { id, titulo, contenido } of data.attributes.tarjetas_logros) {
-      cardsAchievement.push({
-        id,
-        title: titulo,
-        content: contenido,
-      });
-    }
-
-    return { props: { data, cards, cardsAchievement } };
+    return { props: { data, achievements } };
   } catch (error: any) {
     return { props: { message: error.message, error: true } };
   }
 };
 
-export default function History({
-  data,
-  cards,
-  cardsAchievement,
-  error,
-}: Props) {
+export default function History({ data, achievements, error }: Props) {
   const vw = useViewPortWidth();
   const [timelineActives, setTimelineActives] = useState<number[]>([]);
-  const [achievementActive, setAchievementActive] = useState<Card | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [achievementData, setAchievementData] = useState(achievements.data);
+  const [achievementActive, setAchievementActive] = useState<CardType | null>(
+    null
+  );
+  const [pagination, setPagination] = useState({
+    page: achievements.meta.pagination.page,
+    pageCount: achievements.meta.pagination.pageCount,
+  });
+
+  useEffect(() => {
+    if (!isSearching) return;
+
+    const queryApi = async () => {
+      try {
+        const {
+          data: { data },
+        } = await getAchievementsDataAPI({
+          page: pagination.page,
+          pageSize: 4,
+        });
+
+        setTimeout(() => {
+          setAchievementData((state) => [...state, ...data]);
+          setIsSearching(false);
+        }, 2000);
+      } catch (error) {
+        toast.error(
+          'Error: no se pudo cargar mas información, intente mas tarde.'
+        );
+      }
+    };
+    queryApi();
+  }, [isSearching, pagination.page]);
 
   if (error) return 'No se puede cargar la página.';
 
@@ -74,7 +102,7 @@ export default function History({
     const date = new Date(stringDate ? `${stringDate}T00:00:00` : Date.now());
     const month = new Intl.DateTimeFormat('es', { month: 'long' }).format(date);
     const monthFormat = month.charAt(0).toUpperCase() + month.slice(1);
-    return `${monthFormat} ${date.getFullYear()}`;
+    return `${monthFormat} ${date.getDate()}, ${date.getFullYear()}`;
   };
 
   return (
@@ -90,98 +118,169 @@ export default function History({
       <section id='timeline' className='container'>
         <h2>{data.attributes.titulo}</h2>
         <div className='articles'>
-          {cards.map(({ id, date, title, content }, i) => (
-            <Fragment key={id}>
-              <div className='line'></div>
-              <article
-                style={{
-                  gridColumn:
-                    vw >= 768
-                      ? i % 2 === 0
-                        ? '1 / span 1'
-                        : '3 / span 1'
-                      : undefined,
-                  gridRow: vw >= 768 ? `${i + 1} / span 1` : undefined,
-                }}
-              >
-                {date && (
-                  <p className='date'>{formatDate({ stringDate: date })}</p>
-                )}
-                <aside className='box-shadow'>
-                  <h3>{title}</h3>
-                  <div
-                    className={`content ${
-                      timelineActives.includes(i)
-                        ? 'is-active'
-                        : 'is-not-active'
-                    }`}
-                    dangerouslySetInnerHTML={{ __html: content }}
-                  />
-                  <button
-                    type='button'
-                    title='read more'
-                    onClick={() => {
-                      setTimelineActives((state) => {
-                        if (state.includes(i)) {
-                          return state.filter((n) => n !== i);
-                        } else {
-                          return [...state, i];
-                        }
-                      });
-                    }}
-                  >
-                    {timelineActives.includes(i) ? 'Leer menos' : 'Leer más'}
-                    <span>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth={4}
-                        stroke={colors.color1}
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M9 5l7 7-7 7'
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                </aside>
-              </article>
-            </Fragment>
-          ))}
+          {data.attributes.tarjetas.map(
+            ({ id, fecha, titulo, contenido, imagen }, i) => (
+              <Fragment key={id}>
+                <div className='line'></div>
+                <article
+                  style={{
+                    gridColumn:
+                      vw >= 768
+                        ? i % 2 === 0
+                          ? '1 / span 1'
+                          : '3 / span 1'
+                        : undefined,
+                    gridRow: vw >= 768 ? `${i + 1} / span 1` : undefined,
+                  }}
+                >
+                  {fecha && (
+                    <p className='date'>{formatDate({ stringDate: fecha })}</p>
+                  )}
+                  <aside className='box-shadow'>
+                    {titulo && <h3>{titulo}</h3>}
+                    <div
+                      className={`content ${
+                        timelineActives.includes(i)
+                          ? 'is-active'
+                          : 'is-not-active'
+                      }`}
+                    >
+                      {imagen?.data && (
+                        <div className='img-container'>
+                          <Image
+                            src={imagen.data.attributes.url}
+                            alt='image'
+                            layout='fill'
+                            objectFit='cover'
+                            placeholder='blur'
+                            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                              shimmer('100%', '100%')
+                            )}`}
+                          />
+                        </div>
+                      )}
+                      {contenido && (
+                        <div dangerouslySetInnerHTML={{ __html: contenido }} />
+                      )}
+                    </div>
+                    <button
+                      type='button'
+                      title='read more'
+                      onClick={() => {
+                        setTimelineActives((state) => {
+                          if (state.includes(i)) {
+                            return state.filter((n) => n !== i);
+                          } else {
+                            return [...state, i];
+                          }
+                        });
+                      }}
+                    >
+                      {timelineActives.includes(i) ? 'Leer menos' : 'Leer más'}
+                      <span>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={4}
+                          stroke={colors.color1}
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M9 5l7 7-7 7'
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </aside>
+                </article>
+              </Fragment>
+            )
+          )}
         </div>
       </section>
       <section id='achievements' className='container'>
         <h2>{data.attributes.titulo_logros}</h2>
         <div className='row'>
-          {cardsAchievement.map(({ id, title, content }) => (
-            <article
-              key={id}
-              className='achievement col-12 col-md-4 box-shadow'
-            >
-              <h3>{title}</h3>
+          {achievementData.map(
+            ({ id, attributes: { titulo, imagen, contenido, fecha } }) => (
+              <article
+                key={id}
+                className='achievement col-12 col-md-6 box-shadow'
+              >
+                {imagen?.data && (
+                  <div className='img-container'>
+                    <Image
+                      src={imagen.data.attributes.url}
+                      alt='image'
+                      layout='fill'
+                      objectFit='cover'
+                      placeholder='blur'
+                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                        shimmer('100%', '100%')
+                      )}`}
+                    />
+                  </div>
+                )}
+                {titulo && <h3>{titulo}</h3>}
+                <p>{formatDate({ stringDate: fecha })}</p>
+                <button
+                  type='button'
+                  title='read more'
+                  className='button'
+                  onClick={() => {
+                    setAchievementActive({
+                      id,
+                      titulo,
+                      imagen,
+                      contenido,
+                      fecha,
+                    });
+                    setShowModal(true);
+                  }}
+                >
+                  Leer más
+                </button>
+              </article>
+            )
+          )}
+        </div>
+        {isSearching && <Loader size='big' />}
+        {pagination.page !== pagination.pageCount && (
+          <div
+            className='row'
+            style={{ justifyContent: 'center', marginTop: '4rem' }}
+          >
+            <div className='col-6'>
               <button
                 type='button'
-                title='read more'
+                title='show more'
                 className='button'
+                style={{ width: '100%' }}
                 onClick={() => {
-                  setAchievementActive({ id, title, content });
-                  setShowModal(true);
+                  setPagination((state) => ({
+                    ...state,
+                    page: state.page + 1,
+                  }));
+                  setIsSearching(true);
                 }}
               >
-                Leer más
+                Cargar mas
               </button>
-            </article>
-          ))}
-        </div>
+            </div>
+          </div>
+        )}
       </section>
       {achievementActive && showModal && (
         <Modal
-          title={achievementActive.title}
-          content={achievementActive.content}
-          setShowModal={setShowModal}
+          title={achievementActive.titulo || ''}
+          content={achievementActive.contenido || ''}
+          image={achievementActive.imagen}
+          setShowModal={() => {
+            setAchievementActive(null);
+            setShowModal(false);
+          }}
         />
       )}
       <style jsx>{`
@@ -205,6 +304,17 @@ export default function History({
           height: 2px;
           left: 0;
           position: absolute;
+          width: 100%;
+        }
+
+        h3 {
+          color: ${colors.color1};
+          margin: 1rem 0;
+        }
+
+        div.img-container {
+          height: 300px;
+          position: relative;
           width: 100%;
         }
 
@@ -272,10 +382,6 @@ export default function History({
           padding: 1rem;
         }
 
-        aside h3 {
-          color: ${colors.color1};
-        }
-
         aside div.content {
           height: 0;
           margin: 0;
@@ -284,6 +390,7 @@ export default function History({
 
         aside div.content.is-active {
           height: auto;
+          padding: 1rem 0;
         }
 
         aside button {
@@ -306,11 +413,13 @@ export default function History({
         }
 
         article.achievement {
+          display: flex;
+          flex-direction: column;
           padding: 1rem;
         }
 
         article.achievement h3 {
-          text-align: center;
+          flex: 1;
         }
 
         article.achievement button {

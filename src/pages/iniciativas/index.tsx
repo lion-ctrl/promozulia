@@ -139,10 +139,7 @@ export default function Iniciativas({ data, error }: Props) {
         <h2>{data.attributes.titulo_proyectos}</h2>
         <div className='row'>
           {Array.from(Array(6).keys()).map((n) => (
-            <article
-              key={n}
-              className='project box-shadow col-12 col-md-6 col-lg-4'
-            >
+            <article key={n} className='project box-shadow col-12 col-md-6'>
               <div className='img-container'>
                 <Image
                   src='/img/example.jpg'
@@ -155,7 +152,7 @@ export default function Iniciativas({ data, error }: Props) {
                   )}`}
                 />
               </div>
-              <h4>Titulo</h4>
+              <h3>Titulo</h3>
               <p>
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rem
                 cum et soluta doloribus voluptates quod, natus illum optio
@@ -191,6 +188,10 @@ export default function Iniciativas({ data, error }: Props) {
           left: 0;
           position: absolute;
           width: 100%;
+        }
+
+        h3 {
+          margin: 1rem 0;
         }
 
         section#banner-1 {
