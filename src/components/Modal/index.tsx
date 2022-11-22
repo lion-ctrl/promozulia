@@ -1,23 +1,16 @@
 import React from 'react';
-import Image from 'next/image';
 // components
 import { Xcircle } from 'components/Icons';
-// helpers
-import { shimmer, toBase64 } from 'helpers';
-// interfces
-import { ImageType } from 'interface';
 // styles
 import { colors } from 'styles/variables';
 
 export default function Modal({
   title,
-  content,
-  image,
+  children,
   setShowModal,
 }: {
   title: string;
-  content: string;
-  image?: ImageType;
+  children: React.ReactNode;
   setShowModal: () => void;
 }) {
   return (
@@ -42,23 +35,7 @@ export default function Modal({
               <Xcircle />
             </div>
           </div>
-          <div className='body'>
-            {image?.data && (
-              <div className='img-container'>
-                <Image
-                  src={image.data.attributes.url}
-                  alt='image'
-                  layout='fill'
-                  objectFit='cover'
-                  placeholder='blur'
-                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                    shimmer('100%', '100%')
-                  )}`}
-                />
-              </div>
-            )}
-            <div dangerouslySetInnerHTML={{ __html: content }} />
-          </div>
+          <div className='body'>{children}</div>
         </div>
       </div>
       <style jsx>{`
