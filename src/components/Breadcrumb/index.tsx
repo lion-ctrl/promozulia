@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 export default function BreadCrumb({ title }: { title: string }) {
   const router = useRouter();
-  const paths = router.pathname.split('/').slice(1);
+  const paths = router.asPath.split('/').slice(1);
 
   return (
     <>

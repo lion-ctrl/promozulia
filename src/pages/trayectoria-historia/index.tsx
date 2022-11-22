@@ -6,14 +6,14 @@ import Modal from 'components/Modal';
 import BreadCrumb from 'components/Breadcrumb';
 import Loader from 'components/Loader';
 // helpers
-import { shimmer, toBase64 } from 'helpers';
-// interfaces
-import { CardType, CollectionType, ImageType } from 'interface';
+import { shimmer, toBase64, formatDate } from 'helpers';
 // hooks
 import useViewPortWidth from 'hooks/useViewPortWidth';
 // http methods
 import { getHistoryPageDataAPI } from 'api/pages';
 import { getAchievementsDataAPI } from 'api/collections';
+// interfaces
+import { CardType, CollectionType, ImageType } from 'interface';
 // styles
 import { addOpacity } from 'styles/utils';
 import { breakPoints, colors, fluidFontSizes } from 'styles/variables';
@@ -98,13 +98,6 @@ export default function History({ data, achievements, error }: Props) {
 
   if (error) return 'No se puede cargar la página.';
 
-  const formatDate = ({ stringDate }: { stringDate: string | undefined }) => {
-    const date = new Date(stringDate ? `${stringDate}T00:00:00` : Date.now());
-    const month = new Intl.DateTimeFormat('es', { month: 'long' }).format(date);
-    const monthFormat = month.charAt(0).toUpperCase() + month.slice(1);
-    return `${monthFormat} ${date.getDate()}, ${date.getFullYear()}`;
-  };
-
   return (
     <Layout>
       <div className='container'>
@@ -120,7 +113,7 @@ export default function History({ data, achievements, error }: Props) {
         <div className='articles'>
           {data.attributes.tarjetas.map(
             ({ id, fecha, titulo, contenido, imagen }, i) => (
-              <Fragment key={id}>
+              <Fragment key={`${id}${i}`}>
                 <div className='line'></div>
                 <article
                   style={{
@@ -224,7 +217,7 @@ export default function History({ data, achievements, error }: Props) {
                   </div>
                 )}
                 {titulo && <h3>{titulo}</h3>}
-                <p>{formatDate({ stringDate: fecha })}</p>
+                {fecha && <p>{formatDate({ stringDate: fecha })}</p>}
                 <button
                   type='button'
                   title='read more'
@@ -266,7 +259,7 @@ export default function History({ data, achievements, error }: Props) {
                   setIsSearching(true);
                 }}
               >
-                Cargar mas
+                Cargar más
               </button>
             </div>
           </div>
@@ -275,13 +268,31 @@ export default function History({ data, achievements, error }: Props) {
       {achievementActive && showModal && (
         <Modal
           title={achievementActive.titulo || ''}
-          content={achievementActive.contenido || ''}
-          image={achievementActive.imagen}
           setShowModal={() => {
             setAchievementActive(null);
             setShowModal(false);
           }}
-        />
+        >
+          {achievementActive.imagen?.data && (
+            <div className='img-container'>
+              <Image
+                src={achievementActive.imagen.data.attributes.url}
+                alt='image'
+                layout='fill'
+                objectFit='cover'
+                placeholder='blur'
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                  shimmer('100%', '100%')
+                )}`}
+              />
+            </div>
+          )}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: achievementActive.contenido || '',
+            }}
+          />
+        </Modal>
       )}
       <style jsx>{`
         h1 {

@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Slider from 'react-slick';
+import toast from 'react-hot-toast';
 // components
 import Layout from 'components/Layout';
 import BreadCrumb from 'components/Breadcrumb';
+import Loader from 'components/Loader';
+import Modal from 'components/Modal';
 // helpers
-import { shimmer, toBase64 } from 'helpers';
+import { formatDate, shimmer, toBase64 } from 'helpers';
 import { slug } from 'helpers/slug';
 // http methods
 import { getInitiativesPageDataAPI } from 'api/pages';
+import { getPlansDataAPI } from 'api/collections';
+// interfaces
+import { CardType, CollectionType, ImageType } from 'interface';
 // styles
 import { addOpacity } from 'styles/utils';
 import { colors } from 'styles/variables';
-import Image from 'next/image';
 
 interface Props {
   data: {
@@ -42,6 +48,12 @@ interface Props {
       }[];
     };
   };
+  plans: CollectionType<{
+    titulo: string;
+    contenido: string;
+    imagen: ImageType;
+    fecha?: string;
+  }>;
   error: boolean;
 }
 
@@ -80,17 +92,57 @@ const carouseSettings = {
 
 export const getServerSideProps = async () => {
   try {
-    const {
-      data: { data },
-    } = await getInitiativesPageDataAPI();
+    const [
+      {
+        data: { data },
+      },
+      { data: plans },
+    ] = await Promise.all([
+      getInitiativesPageDataAPI(),
+      getPlansDataAPI({ page: 1, pageSize: 4 }),
+    ]);
 
-    return { props: { data } };
+    return { props: { data, plans } };
   } catch (error: any) {
     return { props: { message: error.message, error: true } };
   }
 };
 
-export default function Iniciativas({ data, error }: Props) {
+export default function Iniciativas({ data, plans, error }: Props) {
+  const [isSearching, setIsSearching] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [planData, setPlanData] = useState(plans.data);
+  const [active, setActive] = useState<CardType | null>(null);
+  const [pagination, setPagination] = useState({
+    page: plans.meta.pagination.page,
+    pageCount: plans.meta.pagination.pageCount,
+  });
+
+  useEffect(() => {
+    if (!isSearching) return;
+
+    const queryApi = async () => {
+      try {
+        const {
+          data: { data },
+        } = await getPlansDataAPI({
+          page: pagination.page,
+          pageSize: 4,
+        });
+
+        setTimeout(() => {
+          setPlanData((state) => [...state, ...data]);
+          setIsSearching(false);
+        }, 2000);
+      } catch (error) {
+        toast.error(
+          'Error: no se pudo cargar mas información, intente mas tarde.'
+        );
+      }
+    };
+    queryApi();
+  }, [isSearching, pagination.page]);
+
   if (error) return 'No se puede cargar la página.';
 
   return (
@@ -106,10 +158,10 @@ export default function Iniciativas({ data, error }: Props) {
       <section id='tips' className='container'>
         <h2>{data.attributes.titulo_consejos}</h2>
         <Slider {...carouseSettings}>
-          {data.attributes.consejos.map(({ id, imagen, titulo }) => (
-            <>
+          {data.attributes.consejos.map(({ id, imagen, titulo }, i) => (
+            <Fragment key={`${id}${i}`}>
               {titulo && (
-                <div key={id}>
+                <div>
                   <article className='tip'>
                     <Link href={`/consejo/${slug(titulo)}`}>
                       <a>
@@ -131,19 +183,94 @@ export default function Iniciativas({ data, error }: Props) {
                   </article>
                 </div>
               )}
-            </>
+            </Fragment>
           ))}
         </Slider>
       </section>
       <section id='ongoing-projects' className='container'>
         <h2>{data.attributes.titulo_proyectos}</h2>
         <div className='row'>
-          {Array.from(Array(6).keys()).map((n) => (
-            <article key={n} className='project box-shadow col-12 col-md-6'>
+          {planData.map(
+            ({ id, attributes: { titulo, imagen, contenido, fecha } }, i) => (
+              <article
+                key={`${id}${i}`}
+                className='project box-shadow col-12 col-md-6'
+              >
+                {imagen?.data && (
+                  <div className='img-container'>
+                    <Image
+                      src={imagen.data.attributes.url}
+                      alt='imagen'
+                      layout='fill'
+                      objectFit='cover'
+                      placeholder='blur'
+                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                        shimmer('100%', '100%')
+                      )}`}
+                    />
+                  </div>
+                )}
+                {titulo && <h3>{titulo}</h3>}
+                {fecha && <p>{formatDate({ stringDate: fecha })}</p>}
+                <button
+                  type='button'
+                  title='see more'
+                  className='button'
+                  onClick={() => {
+                    setActive({
+                      id,
+                      titulo,
+                      imagen,
+                      contenido,
+                      fecha,
+                    });
+                    setShowModal(true);
+                  }}
+                >
+                  Ver
+                </button>
+              </article>
+            )
+          )}
+        </div>
+        {isSearching && <Loader size='big' />}
+        {pagination.page !== pagination.pageCount && (
+          <div
+            className='row'
+            style={{ justifyContent: 'center', marginTop: '4rem' }}
+          >
+            <div className='col-6'>
+              <button
+                type='button'
+                title='show more'
+                className='button'
+                style={{ width: '100%' }}
+                onClick={() => {
+                  setPagination((state) => ({
+                    ...state,
+                    page: state.page + 1,
+                  }));
+                  setIsSearching(true);
+                }}
+              >
+                Cargar más
+              </button>
+            </div>
+          </div>
+        )}
+        {active && showModal && (
+          <Modal
+            title={active.titulo || ''}
+            setShowModal={() => {
+              setActive(null);
+              setShowModal(false);
+            }}
+          >
+            {active.imagen?.data && (
               <div className='img-container'>
                 <Image
-                  src='/img/example.jpg'
-                  alt='imagen'
+                  src={active.imagen.data.attributes.url}
+                  alt='image'
                   layout='fill'
                   objectFit='cover'
                   placeholder='blur'
@@ -152,19 +279,14 @@ export default function Iniciativas({ data, error }: Props) {
                   )}`}
                 />
               </div>
-              <h3>Titulo</h3>
-              <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rem
-                cum et soluta doloribus voluptates quod, natus illum optio
-                consequatur aspernatur vero similique odit ullam, veniam tenetur
-                expedita officiis maiores omnis?
-              </p>
-              <button type='button' title='see more' className='button'>
-                Ver
-              </button>
-            </article>
-          ))}
-        </div>
+            )}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: active.contenido || '',
+              }}
+            />
+          </Modal>
+        )}
       </section>
       <style jsx>{`
         h1 {
@@ -238,17 +360,18 @@ export default function Iniciativas({ data, error }: Props) {
         }
 
         article.project {
-          padding: 0.5rem;
+          display: flex;
+          flex-direction: column;
+          padding: 1rem;
         }
 
-        article.project p {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        article.project h3 {
+          flex: 1;
         }
 
         article.project button {
           display: block;
+          margin-top: 1rem;
           width: 100%;
         }
       `}</style>
