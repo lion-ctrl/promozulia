@@ -8,10 +8,10 @@ import { shimmer, toBase64 } from 'helpers';
 // http methods
 import { getAdviceDataAPI } from 'api/collections';
 // interfaces
-import { GetServerSideProps } from 'next';
 import { CollectionType, ImageType } from 'interface';
 // styles
 import { colors } from 'styles/variables';
+import Redirect from 'components/Redirect';
 
 interface Props {
   data: CollectionType<{
@@ -22,25 +22,9 @@ interface Props {
   }>;
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { params, res } = ctx;
-
-  if (!params?.slug) {
-    res.writeHead(301, { Location: '/iniciativas' }).end();
-    return { props: { data: null } };
-  }
-
-  try {
-    const { data } = await getAdviceDataAPI({ slug: params!.slug as string });
-
-    return { props: { data } };
-  } catch (error: any) {
-    res.writeHead(301, { Location: '/iniciativas' }).end();
-  }
-  return { props: { data: null } };
-};
-
 export default function Consejo({ data }: Props) {
+  if (!data?.data?.length) return <Redirect to='/iniciativas' />;
+
   return (
     <Layout>
       <div className='container'>
@@ -49,7 +33,7 @@ export default function Consejo({ data }: Props) {
       <section className='container'>
         <div className='img-container'>
           <Image
-            src={data.data[0].attributes.imagen.data?.attributes.url!}
+            src={data?.data[0].attributes.imagen.data?.attributes.url!}
             alt='image'
             layout='fill'
             objectFit='cover'
@@ -59,10 +43,10 @@ export default function Consejo({ data }: Props) {
             )}`}
           />
         </div>
-        <h1>{data.data[0].attributes.titulo}</h1>
+        <h1>{data?.data[0].attributes.titulo}</h1>
         <div
           dangerouslySetInnerHTML={{
-            __html: data.data[0].attributes.contenido || '',
+            __html: data?.data[0].attributes.contenido || '',
           }}
         />
       </section>
@@ -83,3 +67,21 @@ export default function Consejo({ data }: Props) {
     </Layout>
   );
 }
+
+Consejo.getInitialProps = async (ctx: any) => {
+  const { query, res } = ctx;
+
+  if (!query?.slug) {
+    res.writeHead(301, { Location: '/iniciativas' }).end();
+    return { data: null };
+  }
+
+  try {
+    const { data } = await getAdviceDataAPI({ slug: query!.slug as string });
+
+    return { data };
+  } catch (error: any) {
+    res.writeHead(301, { Location: '/iniciativas' }).end();
+  }
+  return { data: null };
+};
