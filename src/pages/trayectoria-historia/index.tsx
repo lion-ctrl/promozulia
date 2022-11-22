@@ -62,13 +62,15 @@ export default function History({ data, achievements, error }: Props) {
   const [timelineActives, setTimelineActives] = useState<number[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [achievementData, setAchievementData] = useState(achievements.data);
+  const [achievementData, setAchievementData] = useState(
+    achievements?.data || []
+  );
   const [achievementActive, setAchievementActive] = useState<CardType | null>(
     null
   );
   const [pagination, setPagination] = useState({
-    page: achievements.meta.pagination.page,
-    pageCount: achievements.meta.pagination.pageCount,
+    page: achievements?.meta.pagination.page || 1,
+    pageCount: achievements?.meta.pagination.pageCount || 0,
   });
 
   useEffect(() => {
@@ -105,194 +107,205 @@ export default function History({ data, achievements, error }: Props) {
       </div>
       <section id='banner-1' className='banner'>
         <div className='container'>
-          <h1>{data.attributes.titulo_banner}</h1>
+          <h1>{data?.attributes?.titulo_banner}</h1>
         </div>
       </section>
-      <section id='timeline' className='container'>
-        <h2>{data.attributes.titulo}</h2>
-        <div className='articles'>
-          {data.attributes.tarjetas.map(
-            ({ id, fecha, titulo, contenido, imagen }, i) => (
-              <Fragment key={`${id}${i}`}>
-                <div className='line'></div>
+      {!!data?.attributes?.tarjetas.length && (
+        <section id='timeline' className='container'>
+          <h2>{data?.attributes?.titulo}</h2>
+          <div className='articles'>
+            {data?.attributes?.tarjetas.map(
+              ({ id, fecha, titulo, contenido, imagen }, i) => (
+                <Fragment key={`${id}${i}`}>
+                  <div className='line'></div>
+                  <article
+                    style={{
+                      gridColumn:
+                        vw >= 768
+                          ? i % 2 === 0
+                            ? '1 / span 1'
+                            : '3 / span 1'
+                          : undefined,
+                      gridRow: vw >= 768 ? `${i + 1} / span 1` : undefined,
+                    }}
+                  >
+                    {fecha && (
+                      <p className='date'>
+                        {formatDate({ stringDate: fecha })}
+                      </p>
+                    )}
+                    <aside className='box-shadow'>
+                      {titulo && <h3>{titulo}</h3>}
+                      <div
+                        className={`content ${
+                          timelineActives.includes(i)
+                            ? 'is-active'
+                            : 'is-not-active'
+                        }`}
+                      >
+                        {imagen?.data && (
+                          <div className='img-container'>
+                            <Image
+                              src={imagen.data?.attributes?.url}
+                              alt='image'
+                              layout='fill'
+                              objectFit='cover'
+                              placeholder='blur'
+                              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                                shimmer('100%', '100%')
+                              )}`}
+                            />
+                          </div>
+                        )}
+                        {contenido && (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: contenido }}
+                          />
+                        )}
+                      </div>
+                      <button
+                        type='button'
+                        title='read more'
+                        onClick={() => {
+                          setTimelineActives((state) => {
+                            if (state.includes(i)) {
+                              return state.filter((n) => n !== i);
+                            } else {
+                              return [...state, i];
+                            }
+                          });
+                        }}
+                      >
+                        {timelineActives.includes(i)
+                          ? 'Leer menos'
+                          : 'Leer más'}
+                        <span>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            strokeWidth={4}
+                            stroke={colors.color1}
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M9 5l7 7-7 7'
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </aside>
+                  </article>
+                </Fragment>
+              )
+            )}
+          </div>
+        </section>
+      )}
+
+      {!!achievementData.length && (
+        <section id='achievements' className='container'>
+          <h2>{data?.attributes?.titulo_logros}</h2>
+          <div className='row'>
+            {achievementData.map(
+              ({ id, attributes: { titulo, imagen, contenido, fecha } }) => (
                 <article
-                  style={{
-                    gridColumn:
-                      vw >= 768
-                        ? i % 2 === 0
-                          ? '1 / span 1'
-                          : '3 / span 1'
-                        : undefined,
-                    gridRow: vw >= 768 ? `${i + 1} / span 1` : undefined,
-                  }}
+                  key={id}
+                  className='achievement col-12 col-md-6 box-shadow'
                 >
-                  {fecha && (
-                    <p className='date'>{formatDate({ stringDate: fecha })}</p>
-                  )}
-                  <aside className='box-shadow'>
-                    {titulo && <h3>{titulo}</h3>}
-                    <div
-                      className={`content ${
-                        timelineActives.includes(i)
-                          ? 'is-active'
-                          : 'is-not-active'
-                      }`}
-                    >
-                      {imagen?.data && (
-                        <div className='img-container'>
-                          <Image
-                            src={imagen.data.attributes.url}
-                            alt='image'
-                            layout='fill'
-                            objectFit='cover'
-                            placeholder='blur'
-                            blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                              shimmer('100%', '100%')
-                            )}`}
-                          />
-                        </div>
-                      )}
-                      {contenido && (
-                        <div dangerouslySetInnerHTML={{ __html: contenido }} />
-                      )}
+                  {imagen?.data && (
+                    <div className='img-container'>
+                      <Image
+                        src={imagen.data?.attributes?.url}
+                        alt='image'
+                        layout='fill'
+                        objectFit='cover'
+                        placeholder='blur'
+                        blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                          shimmer('100%', '100%')
+                        )}`}
+                      />
                     </div>
-                    <button
-                      type='button'
-                      title='read more'
-                      onClick={() => {
-                        setTimelineActives((state) => {
-                          if (state.includes(i)) {
-                            return state.filter((n) => n !== i);
-                          } else {
-                            return [...state, i];
-                          }
-                        });
-                      }}
-                    >
-                      {timelineActives.includes(i) ? 'Leer menos' : 'Leer más'}
-                      <span>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth={4}
-                          stroke={colors.color1}
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M9 5l7 7-7 7'
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </aside>
+                  )}
+                  {titulo && <h3>{titulo}</h3>}
+                  {fecha && <p>{formatDate({ stringDate: fecha })}</p>}
+                  <button
+                    type='button'
+                    title='read more'
+                    className='button'
+                    onClick={() => {
+                      setAchievementActive({
+                        id,
+                        titulo,
+                        imagen,
+                        contenido,
+                        fecha,
+                      });
+                      setShowModal(true);
+                    }}
+                  >
+                    Leer más
+                  </button>
                 </article>
-              </Fragment>
-            )
-          )}
-        </div>
-      </section>
-      <section id='achievements' className='container'>
-        <h2>{data.attributes.titulo_logros}</h2>
-        <div className='row'>
-          {achievementData.map(
-            ({ id, attributes: { titulo, imagen, contenido, fecha } }) => (
-              <article
-                key={id}
-                className='achievement col-12 col-md-6 box-shadow'
-              >
-                {imagen?.data && (
-                  <div className='img-container'>
-                    <Image
-                      src={imagen.data.attributes.url}
-                      alt='image'
-                      layout='fill'
-                      objectFit='cover'
-                      placeholder='blur'
-                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                        shimmer('100%', '100%')
-                      )}`}
-                    />
-                  </div>
-                )}
-                {titulo && <h3>{titulo}</h3>}
-                {fecha && <p>{formatDate({ stringDate: fecha })}</p>}
+              )
+            )}
+          </div>
+          {isSearching && <Loader size='big' />}
+          {pagination.page !== pagination.pageCount && (
+            <div
+              className='row'
+              style={{ justifyContent: 'center', marginTop: '4rem' }}
+            >
+              <div className='col-6'>
                 <button
                   type='button'
-                  title='read more'
+                  title='show more'
                   className='button'
+                  style={{ width: '100%' }}
                   onClick={() => {
-                    setAchievementActive({
-                      id,
-                      titulo,
-                      imagen,
-                      contenido,
-                      fecha,
-                    });
-                    setShowModal(true);
+                    setPagination((state) => ({
+                      ...state,
+                      page: state.page + 1,
+                    }));
+                    setIsSearching(true);
                   }}
                 >
-                  Leer más
+                  Cargar más
                 </button>
-              </article>
-            )
+              </div>
+            </div>
           )}
-        </div>
-        {isSearching && <Loader size='big' />}
-        {pagination.page !== pagination.pageCount && (
-          <div
-            className='row'
-            style={{ justifyContent: 'center', marginTop: '4rem' }}
-          >
-            <div className='col-6'>
-              <button
-                type='button'
-                title='show more'
-                className='button'
-                style={{ width: '100%' }}
-                onClick={() => {
-                  setPagination((state) => ({
-                    ...state,
-                    page: state.page + 1,
-                  }));
-                  setIsSearching(true);
+          {achievementActive && showModal && (
+            <Modal
+              title={achievementActive.titulo || ''}
+              setShowModal={() => {
+                setAchievementActive(null);
+                setShowModal(false);
+              }}
+            >
+              {achievementActive.imagen?.data && (
+                <div className='img-container'>
+                  <Image
+                    src={achievementActive.imagen.data?.attributes?.url}
+                    alt='image'
+                    layout='fill'
+                    objectFit='cover'
+                    placeholder='blur'
+                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                      shimmer('100%', '100%')
+                    )}`}
+                  />
+                </div>
+              )}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: achievementActive.contenido || '',
                 }}
-              >
-                Cargar más
-              </button>
-            </div>
-          </div>
-        )}
-      </section>
-      {achievementActive && showModal && (
-        <Modal
-          title={achievementActive.titulo || ''}
-          setShowModal={() => {
-            setAchievementActive(null);
-            setShowModal(false);
-          }}
-        >
-          {achievementActive.imagen?.data && (
-            <div className='img-container'>
-              <Image
-                src={achievementActive.imagen.data.attributes.url}
-                alt='image'
-                layout='fill'
-                objectFit='cover'
-                placeholder='blur'
-                blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                  shimmer('100%', '100%')
-                )}`}
               />
-            </div>
+            </Modal>
           )}
-          <div
-            dangerouslySetInnerHTML={{
-              __html: achievementActive.contenido || '',
-            }}
-          />
-        </Modal>
+        </section>
       )}
       <style jsx>{`
         h1 {
