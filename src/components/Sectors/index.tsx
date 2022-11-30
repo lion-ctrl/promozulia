@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import Slider from 'react-slick';
+// interfaces
+import { CardType } from 'interface';
 // styles
 import { breakPoints, colors } from 'styles/variables';
+import { Fragment } from 'react';
 
 const carouseSettings = {
   arrows: true,
@@ -48,26 +51,29 @@ const carouseSettings = {
   ],
 };
 
-export default function Sectors({
-  content,
-}: {
-  content: { id: number; title: string | null; src: string | null }[];
-}) {
+export default function Sectors({ content }: { content: CardType[] }) {
   return (
     <>
-      <section id='sectors' className='container'>
+      <section id='sectors' className='container' data-testid='sectors'>
         <Slider {...carouseSettings}>
-          {content.map(({ id, title, src }) => (
-            <div key={id}>
-              <article>
-                <div className='icon-container'>
-                  {src && (
-                    <Image src={src} alt='imagen' height={47} width={47} />
-                  )}
+          {content.map(({ id, titulo, imagen }) => (
+            <Fragment key={id}>
+              {titulo && imagen?.data?.attributes.url && (
+                <div>
+                  <article>
+                    <div className='icon-container'>
+                      <Image
+                        src={imagen.data.attributes.url}
+                        alt='imagen'
+                        height={47}
+                        width={47}
+                      />
+                    </div>
+                    <p>{titulo}</p>
+                  </article>
                 </div>
-                <p>{title}</p>
-              </article>
-            </div>
+              )}
+            </Fragment>
           ))}
         </Slider>
       </section>

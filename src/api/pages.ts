@@ -1,13 +1,13 @@
 import API from "api/index";
 import { AxiosResponse } from "axios";
 
-export const getHomePageDataAPI = (): Promise<AxiosResponse> => {
+export const getHomePageDataAPI = <T>(): Promise<AxiosResponse<T>> => {
   let URI = `/pagina-inicio`;
   URI += `?populate[0]=imagen_banner_sub_titulo&populate[1]=imagen_banner_contacto`;
-  URI += `&populate[2]=carusel_inicio&populate[3]=carusel_inicio.imagen_de_fondo`;
+  URI += `&populate[2]=carusel_inicio&populate[3]=carusel_inicio.imagen`;
   URI += `&populate[4]=tarjetas_inicio&populate[5]=tarjetas_inicio.imagen`;
   URI += `&populate[6]=carusel_sectores&populate[7]=carusel_sectores.imagen`;
-  return API.get(URI);
+  return API.get<T>(URI);
 };
 
 export const getUSPageDataAPI = (): Promise<AxiosResponse> => {
@@ -38,3 +38,6 @@ export const getInitiativesPageDataAPI = (): Promise<AxiosResponse> => {
   URI += `&populate[1]=consejos&populate[2]=consejos.imagen`;
   return API.get(URI);
 };
+
+export const getStudiesPublicationsAPI = (): Promise<AxiosResponse> =>
+  API.get(`/pagina-estudios`);

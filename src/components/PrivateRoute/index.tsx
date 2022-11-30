@@ -10,7 +10,7 @@ export default function PrivateRoute({
 }) {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  if (!isAuthenticated) return <Redirect to='/' />;
+  if (!isAuthenticated) return <Redirect to='/iniciar-sesion' />;
 
   return <>{children}</>;
 }
