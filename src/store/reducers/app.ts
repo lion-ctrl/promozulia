@@ -24,7 +24,7 @@ export interface AppTypes {
   footerInfo: FooterInfo;
 }
 
-const initialState: AppTypes = {
+export const initialState: AppTypes = {
   loading: true,
   headerInfo: {
     logoSrc: "ZULIA",

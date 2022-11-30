@@ -1,5 +1,5 @@
 // react
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
 // components
 import ProgressBar from './ProgressBar';

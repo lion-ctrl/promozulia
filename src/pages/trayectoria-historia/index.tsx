@@ -1,10 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import Image from 'next/image';
 // components
-import Layout from 'components/Layout';
-import Modal from 'components/Modal';
+import Cards from 'components/Cards';
 import BreadCrumb from 'components/Breadcrumb';
-import Loader from 'components/Loader';
+import Layout from 'components/Layout';
 // helpers
 import { shimmer, toBase64, formatDate } from 'helpers';
 // hooks
@@ -17,7 +16,6 @@ import { CardType, CollectionType, ImageType } from 'interface';
 // styles
 import { addOpacity } from 'styles/utils';
 import { breakPoints, colors, fluidFontSizes } from 'styles/variables';
-import toast from 'react-hot-toast';
 
 interface Props {
   data: {
@@ -60,43 +58,6 @@ export const getServerSideProps = async () => {
 export default function History({ data, achievements, error }: Props) {
   const vw = useViewPortWidth();
   const [timelineActives, setTimelineActives] = useState<number[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [achievementData, setAchievementData] = useState(
-    achievements?.data || []
-  );
-  const [achievementActive, setAchievementActive] = useState<CardType | null>(
-    null
-  );
-  const [pagination, setPagination] = useState({
-    page: achievements?.meta.pagination.page || 1,
-    pageCount: achievements?.meta.pagination.pageCount || 0,
-  });
-
-  useEffect(() => {
-    if (!isSearching) return;
-
-    const queryApi = async () => {
-      try {
-        const {
-          data: { data },
-        } = await getAchievementsDataAPI({
-          page: pagination.page,
-          pageSize: 4,
-        });
-
-        setTimeout(() => {
-          setAchievementData((state) => [...state, ...data]);
-          setIsSearching(false);
-        }, 2000);
-      } catch (error) {
-        toast.error(
-          'Error: no se pudo cargar mas información, intente mas tarde.'
-        );
-      }
-    };
-    queryApi();
-  }, [isSearching, pagination.page]);
 
   if (error) return 'No se puede cargar la página.';
 
@@ -204,109 +165,13 @@ export default function History({ data, achievements, error }: Props) {
         </section>
       )}
 
-      {!!achievementData.length && (
-        <section id='achievements' className='container'>
-          <h2>{data?.attributes?.titulo_logros}</h2>
-          <div className='row'>
-            {achievementData.map(
-              ({ id, attributes: { titulo, imagen, contenido, fecha } }) => (
-                <article
-                  key={id}
-                  className='achievement col-12 col-md-6 box-shadow'
-                >
-                  {imagen?.data && (
-                    <div className='img-container'>
-                      <Image
-                        src={imagen.data?.attributes?.url}
-                        alt='image'
-                        layout='fill'
-                        objectFit='cover'
-                        placeholder='blur'
-                        blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                          shimmer('100%', '100%')
-                        )}`}
-                      />
-                    </div>
-                  )}
-                  {titulo && <h3>{titulo}</h3>}
-                  {fecha && <p>{formatDate({ stringDate: fecha })}</p>}
-                  <button
-                    type='button'
-                    title='read more'
-                    className='button'
-                    onClick={() => {
-                      setAchievementActive({
-                        id,
-                        titulo,
-                        imagen,
-                        contenido,
-                        fecha,
-                      });
-                      setShowModal(true);
-                    }}
-                  >
-                    Leer más
-                  </button>
-                </article>
-              )
-            )}
-          </div>
-          {isSearching && <Loader size='big' />}
-          {pagination.page !== pagination.pageCount && (
-            <div
-              className='row'
-              style={{ justifyContent: 'center', marginTop: '4rem' }}
-            >
-              <div className='col-6'>
-                <button
-                  type='button'
-                  title='show more'
-                  className='button'
-                  style={{ width: '100%' }}
-                  onClick={() => {
-                    setPagination((state) => ({
-                      ...state,
-                      page: state.page + 1,
-                    }));
-                    setIsSearching(true);
-                  }}
-                >
-                  Cargar más
-                </button>
-              </div>
-            </div>
-          )}
-          {achievementActive && showModal && (
-            <Modal
-              title={achievementActive.titulo || ''}
-              setShowModal={() => {
-                setAchievementActive(null);
-                setShowModal(false);
-              }}
-            >
-              {achievementActive.imagen?.data && (
-                <div className='img-container'>
-                  <Image
-                    src={achievementActive.imagen.data?.attributes?.url}
-                    alt='image'
-                    layout='fill'
-                    objectFit='cover'
-                    placeholder='blur'
-                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                      shimmer('100%', '100%')
-                    )}`}
-                  />
-                </div>
-              )}
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: achievementActive.contenido || '',
-                }}
-              />
-            </Modal>
-          )}
-        </section>
-      )}
+      <Cards
+        dataEntry={achievements}
+        title={data?.attributes?.titulo_logros || ''}
+        fetchData={({ page, pageSize }) =>
+          getAchievementsDataAPI({ page, pageSize })
+        }
+      />
       <style jsx>{`
         h1 {
           color: ${colors.white};
@@ -434,22 +299,6 @@ export default function History({ data, achievements, error }: Props) {
           display: inline-block;
           height: 1rem;
           width: 1rem;
-        }
-
-        article.achievement {
-          display: flex;
-          flex-direction: column;
-          padding: 1rem;
-        }
-
-        article.achievement h3 {
-          flex: 1;
-        }
-
-        article.achievement button {
-          display: block;
-          margin-top: 1rem;
-          width: 100%;
         }
 
         @media (min-width: ${breakPoints.md}) {

@@ -5,7 +5,7 @@ import BreadCrumb from 'components/Breadcrumb';
 import Redirect from 'components/Redirect';
 import ShowInfo from 'components/ShowInfo';
 // http methods
-import { getAdviceDataAPI } from 'api/collections';
+import { getPublicationDataAPI } from 'api/collections';
 // interfaces
 import { CollectionType, ImageType } from 'interface';
 
@@ -18,8 +18,8 @@ interface Props {
   }>;
 }
 
-export default function Consejo({ data }: Props) {
-  if (!data?.data?.length) return <Redirect to='/iniciativas' />;
+export default function Publicacion({ data }: Props) {
+  if (!data?.data?.length) return <Redirect to='/estudios-publicaciones' />;
 
   return (
     <Layout>
@@ -37,20 +37,22 @@ export default function Consejo({ data }: Props) {
   );
 }
 
-Consejo.getInitialProps = async (ctx: any) => {
+Publicacion.getInitialProps = async (ctx: any) => {
   const { query, res } = ctx;
 
   if (!query?.slug) {
-    res.writeHead(301, { Location: '/iniciativas' }).end();
+    res.writeHead(301, { Location: '/estudios-publicaciones' }).end();
     return { data: null };
   }
 
   try {
-    const { data } = await getAdviceDataAPI({ slug: query!.slug as string });
+    const { data } = await getPublicationDataAPI({
+      slug: query!.slug as string,
+    });
 
     return { data };
   } catch (error: any) {
-    res.writeHead(301, { Location: '/iniciativas' }).end();
+    res.writeHead(301, { Location: '/estudios-publicaciones' }).end();
   }
   return { data: null };
 };

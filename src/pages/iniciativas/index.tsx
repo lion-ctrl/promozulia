@@ -1,21 +1,18 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Slider from 'react-slick';
-import toast from 'react-hot-toast';
 // components
-import Layout from 'components/Layout';
+import Cards from 'components/Cards';
 import BreadCrumb from 'components/Breadcrumb';
-import Loader from 'components/Loader';
-import Modal from 'components/Modal';
+import Layout from 'components/Layout';
 // helpers
-import { formatDate, shimmer, toBase64 } from 'helpers';
-import { slug } from 'helpers/slug';
+import { shimmer, toBase64 } from 'helpers';
 // http methods
 import { getInitiativesPageDataAPI } from 'api/pages';
-import { getPlansDataAPI } from 'api/collections';
+import { getAdvicesDataAPI, getPlansDataAPI } from 'api/collections';
 // interfaces
-import { CardType, CollectionType, ImageType } from 'interface';
+import { CollectionType, ImageType } from 'interface';
 // styles
 import { addOpacity } from 'styles/utils';
 import { colors } from 'styles/variables';
@@ -27,27 +24,14 @@ interface Props {
       titulo_banner: string;
       titulo_consejos: string;
       titulo_proyectos: string;
-      imagen_banner: {
-        data: {
-          attributes: {
-            url: string;
-          };
-        };
-      };
-      consejos: {
-        id: number;
-        texto: string | null;
-        titulo: string | null;
-        imagen: {
-          data: {
-            attributes: {
-              url: string;
-            };
-          };
-        };
-      }[];
+      imagen_banner: ImageType;
     };
   };
+  advices: CollectionType<{
+    titulo: string;
+    imagen: ImageType;
+    slug: string;
+  }>;
   plans: CollectionType<{
     titulo: string;
     contenido: string;
@@ -96,53 +80,21 @@ export const getServerSideProps = async () => {
       {
         data: { data },
       },
+      { data: advices },
       { data: plans },
     ] = await Promise.all([
       getInitiativesPageDataAPI(),
+      getAdvicesDataAPI(),
       getPlansDataAPI({ page: 1, pageSize: 4 }),
     ]);
 
-    return { props: { data, plans } };
+    return { props: { data, advices, plans } };
   } catch (error: any) {
     return { props: { message: error.message, error: true } };
   }
 };
 
-export default function Iniciativas({ data, plans, error }: Props) {
-  const [isSearching, setIsSearching] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [planData, setPlanData] = useState(plans?.data || []);
-  const [active, setActive] = useState<CardType | null>(null);
-  const [pagination, setPagination] = useState({
-    page: plans?.meta.pagination.page || 1,
-    pageCount: plans?.meta.pagination.pageCount || 0,
-  });
-
-  useEffect(() => {
-    if (!isSearching) return;
-
-    const queryApi = async () => {
-      try {
-        const {
-          data: { data },
-        } = await getPlansDataAPI({
-          page: pagination.page,
-          pageSize: 4,
-        });
-
-        setTimeout(() => {
-          setPlanData((state) => [...state, ...data]);
-          setIsSearching(false);
-        }, 2000);
-      } catch (error) {
-        toast.error(
-          'Error: no se pudo cargar mas información, intente mas tarde.'
-        );
-      }
-    };
-    queryApi();
-  }, [isSearching, pagination.page]);
-
+export default function Iniciativas({ data, advices, plans, error }: Props) {
   if (error) return 'No se puede cargar la página.';
 
   return (
@@ -150,149 +102,55 @@ export default function Iniciativas({ data, plans, error }: Props) {
       <div className='container'>
         <BreadCrumb title='PromoZulia' />
       </div>
+
       <section id='banner-1' className='banner'>
         <div className='container'>
           <h1>{data?.attributes?.titulo_banner}</h1>
         </div>
       </section>
-      {!!data?.attributes?.consejos.length && (
+
+      {!!advices.data.length && (
         <section id='tips' className='container'>
           <h2>{data?.attributes?.titulo_consejos}</h2>
           <Slider {...carouseSettings}>
-            {data?.attributes?.consejos.map(({ id, imagen, titulo }, i) => (
-              <Fragment key={`${id}${i}`}>
-                {titulo && (
-                  <div>
-                    <article className='tip'>
-                      <Link href={`/consejo/${slug(titulo)}`}>
-                        <a>
-                          <div className='img-container'>
-                            <Image
-                              src={imagen.data?.attributes?.url}
-                              alt='imagen'
-                              layout='fill'
-                              objectFit='cover'
-                              placeholder='blur'
-                              blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                shimmer('100%', '100%')
-                              )}`}
-                            />
-                          </div>
-                          <p>{titulo}</p>
-                        </a>
-                      </Link>
-                    </article>
-                  </div>
-                )}
-              </Fragment>
-            ))}
+            {advices.data.map(
+              ({ id, attributes: { titulo, imagen, slug } }, i) => (
+                <Fragment key={`${id}${i}`}>
+                  {titulo && imagen.data && (
+                    <div>
+                      <article className='tip'>
+                        <Link href={`/consejo/${slug}`}>
+                          <a>
+                            <div className='img-container'>
+                              <Image
+                                src={imagen.data?.attributes?.url}
+                                alt='imagen'
+                                layout='fill'
+                                objectFit='cover'
+                                placeholder='blur'
+                                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                                  shimmer('100%', '100%')
+                                )}`}
+                              />
+                            </div>
+                            <p>{titulo}</p>
+                          </a>
+                        </Link>
+                      </article>
+                    </div>
+                  )}
+                </Fragment>
+              )
+            )}
           </Slider>
         </section>
       )}
 
-      {!!planData.length && (
-        <section id='ongoing-projects' className='container'>
-          <h2>{data?.attributes?.titulo_proyectos}</h2>
-          <div className='row'>
-            {planData.map(
-              ({ id, attributes: { titulo, imagen, contenido, fecha } }, i) => (
-                <article
-                  key={`${id}${i}`}
-                  className='project box-shadow col-12 col-md-6'
-                >
-                  {imagen?.data && (
-                    <div className='img-container'>
-                      <Image
-                        src={imagen.data?.attributes?.url}
-                        alt='imagen'
-                        layout='fill'
-                        objectFit='cover'
-                        placeholder='blur'
-                        blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                          shimmer('100%', '100%')
-                        )}`}
-                      />
-                    </div>
-                  )}
-                  {titulo && <h3>{titulo}</h3>}
-                  {fecha && <p>{formatDate({ stringDate: fecha })}</p>}
-                  <button
-                    type='button'
-                    title='see more'
-                    className='button'
-                    onClick={() => {
-                      setActive({
-                        id,
-                        titulo,
-                        imagen,
-                        contenido,
-                        fecha,
-                      });
-                      setShowModal(true);
-                    }}
-                  >
-                    Ver
-                  </button>
-                </article>
-              )
-            )}
-          </div>
-          {isSearching && <Loader size='big' />}
-          {pagination.page !== pagination.pageCount && (
-            <div
-              className='row'
-              style={{ justifyContent: 'center', marginTop: '4rem' }}
-            >
-              <div className='col-6'>
-                <button
-                  type='button'
-                  title='show more'
-                  className='button'
-                  style={{ width: '100%' }}
-                  onClick={() => {
-                    setPagination((state) => ({
-                      ...state,
-                      page: state.page + 1,
-                    }));
-                    setIsSearching(true);
-                  }}
-                >
-                  Cargar más
-                </button>
-              </div>
-            </div>
-          )}
-          {active && showModal && (
-            <Modal
-              title={active.titulo || ''}
-              setShowModal={() => {
-                setActive(null);
-                setShowModal(false);
-              }}
-            >
-              {active.imagen?.data && (
-                <div className='img-container'>
-                  <Image
-                    src={active.imagen.data?.attributes?.url}
-                    alt='image'
-                    layout='fill'
-                    objectFit='cover'
-                    placeholder='blur'
-                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                      shimmer('100%', '100%')
-                    )}`}
-                  />
-                </div>
-              )}
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: active.contenido || '',
-                }}
-              />
-            </Modal>
-          )}
-        </section>
-      )}
+      <Cards
+        dataEntry={plans}
+        title={data?.attributes?.titulo_proyectos || ''}
+        fetchData={({ page, pageSize }) => getPlansDataAPI({ page, pageSize })}
+      />
       <style jsx>{`
         h1 {
           color: ${colors.white};
@@ -315,10 +173,6 @@ export default function Iniciativas({ data, plans, error }: Props) {
           left: 0;
           position: absolute;
           width: 100%;
-        }
-
-        h3 {
-          margin: 1rem 0;
         }
 
         section#banner-1 {
@@ -362,22 +216,6 @@ export default function Iniciativas({ data, plans, error }: Props) {
           color: ${colors.color1};
           font-weight: bold;
           text-align: center;
-        }
-
-        article.project {
-          display: flex;
-          flex-direction: column;
-          padding: 1rem;
-        }
-
-        article.project h3 {
-          flex: 1;
-        }
-
-        article.project button {
-          display: block;
-          margin-top: 1rem;
-          width: 100%;
         }
       `}</style>
     </Layout>
